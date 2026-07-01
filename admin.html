@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fiftyshop - Panel Admin</title>
+    <title>Fiftyshop - Admin</title>
     <style>
         :root {
             --bg-primary: #0a0a0a;
@@ -266,7 +266,7 @@
             </div>
             <div class="config-group">
                 <label>Repositorio</label>
-                <input type="text" id="repoName" placeholder="TU_USUARIO/fiftyshop" value="TU_USUARIO/fiftyshop">
+                <input type="text" id="repoName" placeholder="TU_USUARIO/fiftyshop" value="lemoxx2droid/fiftyshop">
             </div>
             <button class="btn btn-primary" onclick="inicializar()">🔗 Conectar y Cargar</button>
             <button class="btn btn-success" onclick="refrescarDatos()">🔄 Refrescar</button>
@@ -334,265 +334,195 @@
     <div class="notification" id="notification"></div>
 
     <script>
-        let GITHUB_API_URL = '';
-        let GITHUB_TOKEN = '';
-        let reservasData = [];
-        let currentSha = null;
-        let reservaAEliminar = null;
+        (function(){
+            let _apiUrl = '';
+            let _token = '';
+            let _data = [];
+            let _sha = null;
+            let _deleteIdx = null;
 
-        function mostrarNotificacion(mensaje, tipo) {
-            const notif = document.getElementById('notification');
-            notif.textContent = mensaje;
-            notif.className = `notification show ${tipo}`;
-            setTimeout(() => { notif.className = 'notification'; }, 4000);
-        }
-
-        function mostrarCargando(mostrar) {
-            document.getElementById('loadingIndicator').style.display = mostrar ? 'inline' : 'none';
-        }
-
-        function inicializar() {
-            const token = document.getElementById('githubToken').value.trim();
-            const repo = document.getElementById('repoName').value.trim();
-
-            if (!token) { mostrarNotificacion('Ingresa el token de GitHub', 'error'); return; }
-            if (!repo) { mostrarNotificacion('Ingresa el nombre del repositorio', 'error'); return; }
-
-            GITHUB_TOKEN = token;
-            GITHUB_API_URL = `https://api.github.com/repos/${repo}/contents/reservas.json`;
-            cargarReservas();
-        }
-
-        async function cargarReservas() {
-            if (!GITHUB_API_URL || !GITHUB_TOKEN) {
-                mostrarNotificacion('Conecta primero con el token y repositorio', 'error');
-                return;
+            function _notif(msg, type) {
+                const n = document.getElementById('notification');
+                n.textContent = msg;
+                n.className = `notification show ${type}`;
+                setTimeout(() => { n.className = 'notification'; }, 4000);
             }
 
-            mostrarCargando(true);
-            try {
-                const response = await fetch(GITHUB_API_URL, {
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
+            function _loading(show) {
+                document.getElementById('loadingIndicator').style.display = show ? 'inline' : 'none';
+            }
 
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        reservasData = [];
-                        currentSha = null;
-                        mostrarNotificacion('reservas.json no encontrado. Se creará al guardar.', 'info');
+            function _init() {
+                const t = document.getElementById('githubToken').value.trim();
+                const r = document.getElementById('repoName').value.trim();
+                if (!t) { _notif('Ingresa el token de GitHub', 'error'); return; }
+                if (!r) { _notif('Ingresa el nombre del repositorio', 'error'); return; }
+                _token = t;
+                _apiUrl = `https://api.github.com/repos/${r}/contents/reservas.json`;
+                _load();
+            }
+
+            async function _load() {
+                if (!_apiUrl || !_token) { _notif('Conecta primero con el token y repositorio', 'error'); return; }
+                _loading(true);
+                try {
+                    const res = await fetch(_apiUrl, {
+                        headers: { 'Authorization': `token ${_token}`, 'Accept': 'application/vnd.github.v3+json' }
+                    });
+                    if (!res.ok) {
+                        if (res.status === 404) { _data = []; _sha = null; _notif('reservas.json no encontrado. Se creará al guardar.', 'info'); }
+                        else { throw new Error(`Error ${res.status}: ${res.statusText}`); }
                     } else {
-                        throw new Error(`Error ${response.status}: ${response.statusText}`);
+                        const d = await res.json();
+                        _sha = d.sha;
+                        _data = JSON.parse(atob(d.content));
                     }
-                } else {
-                    const data = await response.json();
-                    currentSha = data.sha;
-                    const content = atob(data.content);
-                    reservasData = JSON.parse(content);
+                    _render();
+                    _stats();
+                    document.getElementById('statsPanel').style.display = 'flex';
+                    document.getElementById('tableContainer').style.display = 'block';
+                    _notif(`✅ ${_data.length} reservas cargadas`, 'success');
+                } catch (e) {
+                    console.error('Error:', e);
+                    _notif(`Error al cargar: ${e.message}`, 'error');
                 }
-
-                renderizarTabla();
-                actualizarStats();
-                document.getElementById('statsPanel').style.display = 'flex';
-                document.getElementById('tableContainer').style.display = 'block';
-                mostrarNotificacion(`✅ ${reservasData.length} reservas cargadas`, 'success');
-            } catch (error) {
-                console.error('Error:', error);
-                mostrarNotificacion(`Error al cargar: ${error.message}`, 'error');
-            }
-            mostrarCargando(false);
-        }
-
-        function refrescarDatos() {
-            cargarReservas();
-        }
-
-        async function guardarCambios(mensajeCommit = 'Actualizar reservas.json') {
-            if (!GITHUB_API_URL || !GITHUB_TOKEN) {
-                mostrarNotificacion('Conecta primero con el token y repositorio', 'error');
-                return false;
+                _loading(false);
             }
 
-            mostrarCargando(true);
-            try {
-                const contenido = btoa(unescape(encodeURIComponent(JSON.stringify(reservasData, null, 2))));
+            async function _save(msg) {
+                if (!_apiUrl || !_token) { _notif('Conecta primero', 'error'); return false; }
+                _loading(true);
+                try {
+                    const content = btoa(unescape(encodeURIComponent(JSON.stringify(_data, null, 2))));
+                    const body = { message: msg, content: content };
+                    if (_sha) body.sha = _sha;
+                    const res = await fetch(_apiUrl, {
+                        method: 'PUT',
+                        headers: { 'Authorization': `token ${_token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+                    if (!res.ok) throw new Error(`Error ${res.status}`);
+                    const d = await res.json();
+                    _sha = d.content.sha;
+                    return true;
+                } catch (e) {
+                    console.error('Error al guardar:', e);
+                    _notif(`Error al guardar: ${e.message}`, 'error');
+                    return false;
+                } finally { _loading(false); }
+            }
 
-                const body = {
-                    message: mensajeCommit,
-                    content: contenido
-                };
-                if (currentSha) body.sha = currentSha;
-
-                const response = await fetch(GITHUB_API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
+            function _changeState(idx, state) {
+                const prev = _data[idx].estadoPago;
+                _data[idx].estadoPago = state;
+                _save(`Cambio de estado: ${_data[idx].id} → ${state}`).then(ok => {
+                    if (ok) { _render(); _stats(); _notif(`✅ Reserva ${_data[idx].id} marcada como ${state.toUpperCase()}`, 'success'); }
+                    else { _data[idx].estadoPago = prev; _render(); }
                 });
-
-                if (!response.ok) throw new Error(`Error ${response.status}`);
-
-                const data = await response.json();
-                currentSha = data.content.sha;
-                return true;
-            } catch (error) {
-                console.error('Error al guardar:', error);
-                mostrarNotificacion(`Error al guardar: ${error.message}`, 'error');
-                return false;
-            } finally {
-                mostrarCargando(false);
-            }
-        }
-
-        function cambiarEstado(index, nuevoEstado) {
-            const estadoAnterior = reservasData[index].estadoPago;
-            reservasData[index].estadoPago = nuevoEstado;
-
-            guardarCambios(`Cambio de estado: ${reservasData[index].id} → ${nuevoEstado}`).then(guardado => {
-                if (guardado) {
-                    renderizarTabla();
-                    actualizarStats();
-                    mostrarNotificacion(`✅ Reserva ${reservasData[index].id} marcada como ${nuevoEstado.toUpperCase()}`, 'success');
-                } else {
-                    reservasData[index].estadoPago = estadoAnterior;
-                    renderizarTabla();
-                }
-            });
-        }
-
-        function editarCampo(index, campo, valorActual) {
-            const nuevoValor = prompt(`Editar ${campo}:`, valorActual);
-            if (nuevoValor === null || nuevoValor === valorActual) return;
-
-            const valorAnterior = reservasData[index][campo];
-            reservasData[index][campo] = nuevoValor;
-
-            guardarCambios(`Editar ${campo}: ${reservasData[index].id}`).then(guardado => {
-                if (guardado) {
-                    renderizarTabla();
-                    mostrarNotificacion(`✅ ${campo} actualizado correctamente`, 'success');
-                } else {
-                    reservasData[index][campo] = valorAnterior;
-                    renderizarTabla();
-                }
-            });
-        }
-
-        function confirmarEliminar(index) {
-            reservaAEliminar = index;
-            document.getElementById('deleteReservaId').textContent = reservasData[index].id;
-            document.getElementById('deleteModal').classList.add('active');
-        }
-
-        function cerrarModal() {
-            document.getElementById('deleteModal').classList.remove('active');
-            reservaAEliminar = null;
-        }
-
-        function eliminarReserva() {
-            if (reservaAEliminar === null) return;
-
-            const reservaEliminada = reservasData[reservaAEliminar];
-            reservasData.splice(reservaAEliminar, 1);
-
-            guardarCambios(`Eliminar reserva: ${reservaEliminada.id}`).then(guardado => {
-                if (guardado) {
-                    renderizarTabla();
-                    actualizarStats();
-                    mostrarNotificacion(`🗑️ Reserva ${reservaEliminada.id} eliminada`, 'info');
-                } else {
-                    reservasData.splice(reservaAEliminar, 0, reservaEliminada);
-                    renderizarTabla();
-                }
-                cerrarModal();
-            });
-        }
-
-        function filtrarTabla() {
-            const filtro = document.getElementById('searchInput').value.toLowerCase();
-            const filas = document.querySelectorAll('#tbodyReservas tr');
-            let visibles = 0;
-
-            filas.forEach(fila => {
-                const texto = fila.textContent.toLowerCase();
-                const mostrar = texto.includes(filtro);
-                fila.style.display = mostrar ? '' : 'none';
-                if (mostrar) visibles++;
-            });
-
-            document.getElementById('noResults').style.display = visibles === 0 ? 'block' : 'none';
-        }
-
-        function actualizarStats() {
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('statTotal').textContent = reservasData.length;
-            document.getElementById('statPendientes').textContent = reservasData.filter(r => r.estadoPago === 'pendiente').length;
-            document.getElementById('statPagados').textContent = reservasData.filter(r => r.estadoPago === 'pagado').length;
-            document.getElementById('statHoy').textContent = reservasData.filter(r => r.fecha && r.fecha.startsWith(hoy)).length;
-        }
-
-        function renderizarTabla() {
-            const tbody = document.getElementById('tbodyReservas');
-            tbody.innerHTML = '';
-
-            if (reservasData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-muted);">No hay reservas registradas.</td></tr>';
-                return;
             }
 
-            const ordenadas = [...reservasData].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-
-            ordenadas.forEach((r, displayIndex) => {
-                const originalIndex = reservasData.indexOf(r);
-                const tr = document.createElement('tr');
-
-                const badgeClass = r.estadoPago === 'pagado' ? 'badge-pagado' : r.estadoPago === 'cancelado' ? 'badge-cancelado' : 'badge-pendiente';
-                const fecha = r.fecha ? new Date(r.fecha).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }) : 'N/A';
-
-                tr.innerHTML = `
-                    <td><code style="color:var(--red-bright);font-size:0.8em;">${r.id || 'N/A'}</code></td>
-                    <td>${fecha}</td>
-                    <td><span class="editable" ondblclick="editarCampo(${originalIndex}, 'nombre', '${(r.nombre || '').replace(/'/g, "\\'")}')">${r.nombre || 'N/A'}</span></td>
-                    <td><span class="editable" ondblclick="editarCampo(${originalIndex}, 'telefono', '${(r.telefono || '').replace(/'/g, "\\'")}')">${r.telefono || 'N/A'}</span></td>
-                    <td><span class="editable" ondblclick="editarCampo(${originalIndex}, 'correo', '${(r.correo || '').replace(/'/g, "\\'")}')">${r.correo || 'N/A'}</span></td>
-                    <td><span class="editable" style="max-width:150px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" ondblclick="editarCampo(${originalIndex}, 'direccion', '${(r.direccion || '').replace(/'/g, "\\'").replace(/\n/g, ' ')}')" title="${(r.direccion || '').replace(/"/g, '&quot;')}">${r.direccion || 'N/A'}</span></td>
-                    <td><span class="badge ${badgeClass}">${(r.estadoPago || 'pendiente').toUpperCase()}</span></td>
-                    <td>
-                        <div class="actions">
-                            ${r.estadoPago === 'pendiente' ? `<button class="btn btn-success btn-sm" onclick="cambiarEstado(${originalIndex}, 'pagado')">✅ Pagado</button>` : ''}
-                            ${r.estadoPago === 'pagado' ? `<button class="btn btn-warning btn-sm" onclick="cambiarEstado(${originalIndex}, 'pendiente')">⏳ Pendiente</button>` : ''}
-                            ${r.estadoPago !== 'cancelado' ? `<button class="btn btn-warning btn-sm" onclick="cambiarEstado(${originalIndex}, 'cancelado')">❌ Cancelar</button>` : ''}
-                            ${r.estadoPago === 'cancelado' ? `<button class="btn btn-primary btn-sm" onclick="cambiarEstado(${originalIndex}, 'pendiente')">🔄 Restaurar</button>` : ''}
-                            <button class="btn btn-danger btn-sm" onclick="confirmarEliminar(${originalIndex})">🗑️</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('noResults').style.display = 'none';
-        }
-
-        document.getElementById('confirmDeleteBtn').addEventListener('click', eliminarReserva);
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) cerrarModal();
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') cerrarModal();
-        });
-
-        document.getElementById('repoName').addEventListener('change', function() {
-            const repo = this.value.trim();
-            if (repo && GITHUB_TOKEN) {
-                GITHUB_API_URL = `https://api.github.com/repos/${repo}/contents/reservas.json`;
+            function _editField(idx, field, current) {
+                const val = prompt(`Editar ${field}:`, current);
+                if (val === null || val === current) return;
+                const prev = _data[idx][field];
+                _data[idx][field] = val;
+                _save(`Editar ${field}: ${_data[idx].id}`).then(ok => {
+                    if (ok) { _render(); _notif(`✅ ${field} actualizado`, 'success'); }
+                    else { _data[idx][field] = prev; _render(); }
+                });
             }
-        });
+
+            function _confirmDelete(idx) {
+                _deleteIdx = idx;
+                document.getElementById('deleteReservaId').textContent = _data[idx].id;
+                document.getElementById('deleteModal').classList.add('active');
+            }
+
+            function _closeModal() {
+                document.getElementById('deleteModal').classList.remove('active');
+                _deleteIdx = null;
+            }
+
+            function _delete() {
+                if (_deleteIdx === null) return;
+                const removed = _data[_deleteIdx];
+                _data.splice(_deleteIdx, 1);
+                _save(`Eliminar reserva: ${removed.id}`).then(ok => {
+                    if (ok) { _render(); _stats(); _notif(`🗑️ Reserva ${removed.id} eliminada`, 'info'); }
+                    else { _data.splice(_deleteIdx, 0, removed); _render(); }
+                    _closeModal();
+                });
+            }
+
+            function _filter() {
+                const f = document.getElementById('searchInput').value.toLowerCase();
+                const rows = document.querySelectorAll('#tbodyReservas tr');
+                let v = 0;
+                rows.forEach(r => {
+                    const show = r.textContent.toLowerCase().includes(f);
+                    r.style.display = show ? '' : 'none';
+                    if (show) v++;
+                });
+                document.getElementById('noResults').style.display = v === 0 ? 'block' : 'none';
+            }
+
+            function _stats() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('statTotal').textContent = _data.length;
+                document.getElementById('statPendientes').textContent = _data.filter(r => r.estadoPago === 'pendiente').length;
+                document.getElementById('statPagados').textContent = _data.filter(r => r.estadoPago === 'pagado').length;
+                document.getElementById('statHoy').textContent = _data.filter(r => r.fecha && r.fecha.startsWith(today)).length;
+            }
+
+            function _render() {
+                const tbody = document.getElementById('tbodyReservas');
+                tbody.innerHTML = '';
+                if (_data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-muted);">No hay reservas registradas.</td></tr>';
+                    return;
+                }
+                const sorted = [..._data].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+                sorted.forEach(r => {
+                    const idx = _data.indexOf(r);
+                    const tr = document.createElement('tr');
+                    const badge = r.estadoPago === 'pagado' ? 'badge-pagado' : r.estadoPago === 'cancelado' ? 'badge-cancelado' : 'badge-pendiente';
+                    const fecha = r.fecha ? new Date(r.fecha).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }) : 'N/A';
+                    const esc = (s) => (s || '').replace(/'/g, "\\'").replace(/\n/g, ' ');
+                    tr.innerHTML = `
+                        <td><code style="color:var(--red-bright);font-size:0.8em;">${r.id || 'N/A'}</code></td>
+                        <td>${fecha}</td>
+                        <td><span class="editable" ondblclick="_editField(${idx}, 'nombre', '${esc(r.nombre)}')">${r.nombre || 'N/A'}</span></td>
+                        <td><span class="editable" ondblclick="_editField(${idx}, 'telefono', '${esc(r.telefono)}')">${r.telefono || 'N/A'}</span></td>
+                        <td><span class="editable" ondblclick="_editField(${idx}, 'correo', '${esc(r.correo)}')">${r.correo || 'N/A'}</span></td>
+                        <td><span class="editable" style="max-width:150px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" ondblclick="_editField(${idx}, 'direccion', '${esc(r.direccion)}')" title="${(r.direccion || '').replace(/"/g, '&quot;')}">${r.direccion || 'N/A'}</span></td>
+                        <td><span class="badge ${badge}">${(r.estadoPago || 'pendiente').toUpperCase()}</span></td>
+                        <td>
+                            <div class="actions">
+                                ${r.estadoPago === 'pendiente' ? `<button class="btn btn-success btn-sm" onclick="_changeState(${idx}, 'pagado')">✅ Pagado</button>` : ''}
+                                ${r.estadoPago === 'pagado' ? `<button class="btn btn-warning btn-sm" onclick="_changeState(${idx}, 'pendiente')">⏳ Pendiente</button>` : ''}
+                                ${r.estadoPago !== 'cancelado' ? `<button class="btn btn-warning btn-sm" onclick="_changeState(${idx}, 'cancelado')">❌ Cancelar</button>` : ''}
+                                ${r.estadoPago === 'cancelado' ? `<button class="btn btn-primary btn-sm" onclick="_changeState(${idx}, 'pendiente')">🔄 Restaurar</button>` : ''}
+                                <button class="btn btn-danger btn-sm" onclick="_confirmDelete(${idx})">🗑️</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                document.getElementById('noResults').style.display = 'none';
+            }
+
+            window.inicializar = _init;
+            window.refrescarDatos = _load;
+            window.filtrarTabla = _filter;
+            window.cerrarModal = _closeModal;
+            window._changeState = _changeState;
+            window._editField = _editField;
+            window._confirmDelete = _confirmDelete;
+
+            document.getElementById('confirmDeleteBtn').addEventListener('click', _delete);
+            document.getElementById('deleteModal').addEventListener('click', function(e) { if (e.target === this) _closeModal(); });
+            document.addEventListener('keydown', function(e) { if (e.key === 'Escape') _closeModal(); });
+        })();
     </script>
 </body>
 </html>
