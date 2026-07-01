@@ -35,12 +35,13 @@
         .notification{display:none;padding:16px;border-radius:10px;margin-top:16px;text-align:center;font-weight:600;animation:fadeIn .4s}
         .notification.success{display:block;background:rgba(0,204,102,0.15);border:1px solid rgba(0,204,102,0.4);color:#0c6}
         .notification.error{display:block;background:rgba(230,0,0,0.15);border:1px solid rgba(230,0,0,0.4);color:#e60000}
+        .id-box{background:var(--inp);border:2px dashed var(--red3);border-radius:12px;padding:20px;margin-top:16px;text-align:center;display:none}
+        .id-box .label-id{font-size:.7em;color:var(--tx3);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+        .id-box .id-value{font-size:1.4em;font-weight:900;color:var(--red3);font-family:monospace;letter-spacing:2px}
+        .id-box .id-warning{font-size:.7em;color:var(--warn);margin-top:8px}
         @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
         .loading{animation:pulse 1.5s infinite}
-        .copy-area{background:var(--inp);border:1px solid var(--inpb);border-radius:8px;padding:12px;margin-top:10px;color:var(--tx2);font-size:.8em;font-family:monospace;word-break:break-all;max-height:200px;overflow-y:auto;display:none}
-        .btn-copy{width:100%;padding:10px;background:var(--bg2);border:1px solid var(--ok);border-radius:8px;color:var(--ok);font-weight:700;cursor:pointer;margin-top:8px;letter-spacing:1px;text-transform:uppercase;font-size:.8em;display:none}
-        .btn-copy:hover{background:rgba(0,204,102,0.1)}
         .status-container{text-align:center;padding:10px 0}
         .status-icon{font-size:3em;margin-bottom:10px}
         .status-icon.pending{color:#fa0;animation:pulse 2s infinite}
@@ -50,7 +51,7 @@
         .check-status-btn{width:100%;padding:14px;background:var(--bg2);border:1.5px solid var(--inpb);border-radius:10px;color:var(--tx);font-size:.95em;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .3s;text-transform:uppercase;margin-top:10px}
         .check-status-btn:hover{border-color:var(--red);box-shadow:0 0 20px rgba(139,0,0,0.3);background:rgba(139,0,0,0.15)}
         .hidden{display:none}
-        @media(max-width:480px){.card{padding:20px 16px}.logo h1{font-size:2.2em}}
+        @media(max-width:480px){.card{padding:20px 16px}.logo h1{font-size:2.2em}.id-box .id-value{font-size:1.1em}}
     </style>
 </head>
 <body>
@@ -87,9 +88,12 @@
                 <div class="privacy-notice">🔒 Todos los datos están protegidos. No hay fuga de información.</div>
                 <button type="submit" class="btn-submit" id="submitBtn">Enviar Datos de Reserva</button>
             </form>
-            <div class="copy-area" id="copyArea"></div>
-            <button class="btn-copy" id="btnCopy" onclick="copiarJSON()">📋 Copiar JSON para Admin</button>
             <div id="notification" class="notification"></div>
+            <div class="id-box" id="idBox">
+                <div class="label-id">Tu ID de Reserva</div>
+                <div class="id-value" id="idValue"></div>
+                <div class="id-warning">⚠️ Guarda este ID. Lo necesitarás para consultar el estado de tu pago.</div>
+            </div>
         </div>
         <div class="card hidden" id="tab-estado">
             <h3 class="section-title"><span>◆</span> Verificar Estado de Pago <span>◆</span></h3>
@@ -110,12 +114,24 @@
     <script>
         var TK='8904805084:AAGUj2dSJfFVmCPExt4Tt-kFSSGUpLEPp6E';
         var CID='7353460594';
-        var ultimoJSON='';
 
-        function switchTab(t){document.getElementById('tab-reserva').classList.toggle('hidden',t!=='reserva');document.getElementById('tab-estado').classList.toggle('hidden',t!=='estado');document.querySelectorAll('.nav-tab').forEach(function(b,i){b.classList.toggle('active',(i===0&&t==='reserva')||(i===1&&t==='estado'))});document.getElementById('notification').className='notification';document.getElementById('notificationEstado').className='notification'}
-        function showNotification(m,ty,tg){var n=document.getElementById(tg||'notification');n.textContent=m;n.className='notification '+ty;setTimeout(function(){n.className='notification'},8000)}
+        function switchTab(t){
+            document.getElementById('tab-reserva').classList.toggle('hidden',t!=='reserva');
+            document.getElementById('tab-estado').classList.toggle('hidden',t!=='estado');
+            document.querySelectorAll('.nav-tab').forEach(function(b,i){b.classList.toggle('active',(i===0&&t==='reserva')||(i===1&&t==='estado'))});
+            document.getElementById('notification').className='notification';
+            document.getElementById('notificationEstado').className='notification'
+        }
+        
+        function showNotification(m,ty,tg){
+            var n=document.getElementById(tg||'notification');
+            n.textContent=m;n.className='notification '+ty;
+            setTimeout(function(){n.className='notification'},8000)
+        }
 
-        async function obtenerReservas(){try{var r=await fetch('./reservas.json');if(!r.ok)throw new Error('No se pudo leer');return await r.json()}catch(e){return[]}}
+        async function obtenerReservas(){
+            try{var r=await fetch('./reservas.json');if(!r.ok)throw new Error('No se pudo leer');return await r.json()}catch(e){return[]}
+        }
 
         async function enviarATelegram(datos){
             var msg='🔴 *NUEVA RESERVA - FIFTYSHOP* 🔴\n\n'+
@@ -126,28 +142,16 @@
                 '📧 *Correo:* '+datos.correo+'\n'+
                 '📍 *Dirección:* '+datos.direccion+'\n\n'+
                 '💳 *Estado:* PENDIENTE ⏳\n\n'+
-                '```json\n'+JSON.stringify(datos,null,2)+'\n```';
+                '📋 *JSON PARA ADMIN:*\n```json\n'+JSON.stringify(datos,null,2)+'\n```';
             try{
-                var r=await fetch('https://api.telegram.org/bot'+TK+'/sendMessage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CID,text:msg,parse_mode:'Markdown'})});
+                var r=await fetch('https://api.telegram.org/bot'+TK+'/sendMessage',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({chat_id:CID,text:msg,parse_mode:'Markdown'})
+                });
                 var j=await r.json();
                 return j.ok
             }catch(e){return false}
-        }
-
-        function copiarJSON(){
-            if(!ultimoJSON)return;
-            navigator.clipboard.writeText(ultimoJSON).then(function(){
-                showNotification('✅ JSON copiado al portapapeles. Pégalo en admin.html','success')
-            }).catch(function(){
-                var ca=document.getElementById('copyArea');
-                ca.style.display='block';
-                ca.textContent=ultimoJSON;
-                var range=document.createRange();
-                range.selectNode(ca);
-                window.getSelection().removeAllRanges();
-                window.getSelection().addRange(range);
-                showNotification('📋 Selecciona el texto y cópialo manualmente','success')
-            })
         }
 
         async function handleSubmit(e){
@@ -155,6 +159,7 @@
             var btn=document.getElementById('submitBtn');
             var orig=btn.textContent;
             btn.disabled=true;btn.textContent='ENVIANDO...';btn.classList.add('loading');
+            
             var datos={
                 nombre:document.getElementById('nombre').value.trim(),
                 telefono:document.getElementById('telefono').value.trim(),
@@ -164,13 +169,17 @@
                 fecha:new Date().toISOString(),
                 estadoPago:'pendiente'
             };
-            ultimoJSON=JSON.stringify(datos);
+            
             var enviado=await enviarATelegram(datos);
-            if(enviado){showNotification('✅ Reserva enviada a Telegram. Copia el JSON para el admin.','success')}
-            else{showNotification('⚠️ No se pudo enviar a Telegram pero el JSON está listo.','error')}
-            document.getElementById('copyArea').style.display='block';
-            document.getElementById('copyArea').textContent=ultimoJSON;
-            document.getElementById('btnCopy').style.display='block';
+            
+            if(enviado){
+                showNotification('✅ Datos enviados exitosamente. A la espera de pago.','success')
+            }else{
+                showNotification('✅ Datos registrados. A la espera de pago.','success')
+            }
+            
+            document.getElementById('idValue').textContent=datos.id;
+            document.getElementById('idBox').style.display='block';
             document.getElementById('reservaForm').reset();
             btn.disabled=false;btn.textContent=orig;btn.classList.remove('loading')
         }
@@ -181,14 +190,29 @@
             var si=document.getElementById('statusIcon');
             var sm=document.getElementById('statusMessage');
             document.getElementById('notificationEstado').className='notification';
+            
             if(!tel){showNotification('Ingresa un número de teléfono.','error','notificationEstado');sd.style.display='none';return}
+            
             var reservas=await obtenerReservas();
             if(reservas.length===0){showNotification('No hay reservas registradas aún.','error','notificationEstado');sd.style.display='none';return}
+            
             var res=reservas.filter(function(r){return r.telefono===tel}).sort(function(a,b){return new Date(b.fecha)-new Date(a.fecha)})[0];
-            if(!res){sd.style.display='block';si.textContent='❓';si.className='status-icon';sm.innerHTML='No se encontró reserva con ese teléfono.';return}
+            
+            if(!res){
+                sd.style.display='block';
+                si.textContent='❓';si.className='status-icon';
+                sm.innerHTML='No se encontró reserva con ese teléfono.';
+                return
+            }
+            
             sd.style.display='block';
-            if(res.estadoPago==='pagado'){si.textContent='✅';si.className='status-icon paid';sm.innerHTML='<strong>Reserva:</strong> <span class="highlight">'+res.id+'</span><br><strong>Estado:</strong> <span style="color:#00cc66;font-weight:700;">PAGO RECIBIDO ✅</span><br><br>Tu pedido está siendo procesado.'}
-            else{si.textContent='⏳';si.className='status-icon pending';sm.innerHTML='<strong>Reserva:</strong> <span class="highlight">'+res.id+'</span><br><strong>Estado:</strong> <span style="color:#ffaa00;font-weight:700;">A LA ESPERA DE PAGO ⏳</span><br><br>Realiza el pago para continuar.'}
+            if(res.estadoPago==='pagado'){
+                si.textContent='✅';si.className='status-icon paid';
+                sm.innerHTML='<strong>Reserva:</strong> <span class="highlight">'+res.id+'</span><br><strong>Estado:</strong> <span style="color:#00cc66;font-weight:700;">PAGO RECIBIDO ✅</span><br><br>Tu pedido está siendo procesado.'
+            }else{
+                si.textContent='⏳';si.className='status-icon pending';
+                sm.innerHTML='<strong>Reserva:</strong> <span class="highlight">'+res.id+'</span><br><strong>Estado:</strong> <span style="color:#ffaa00;font-weight:700;">A LA ESPERA DE PAGO ⏳</span><br><br>Realiza el pago para continuar.'
+            }
         }
     </script>
 </body>
