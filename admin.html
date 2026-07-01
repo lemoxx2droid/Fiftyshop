@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiftyshop - Panel Admin</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #1e1e1e;
+            --red-dark: #8b0000;
+            --red-blood: #b30000;
+            --red-bright: #e60000;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #808080;
+            --border: #2a0000;
+            --input-bg: #111111;
+            --input-border: #3a0000;
+            --success: #00cc66;
+            --warning: #ffaa00;
+            --danger: #e60000;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            background-image: radial-gradient(ellipse at center, rgba(139,0,0,0.08) 0%, transparent 70%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(180deg, #ff1a1a 0%, #b30000 30%, #660000 60%, #330000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 25px rgba(179,0,0,0.7));
+            font-family: 'Georgia', serif;
+            margin-bottom: 10px;
+        }
+        .header p { color: var(--text-muted); letter-spacing: 2px; }
+        .config-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .config-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .config-group label {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .config-group input {
+            padding: 10px 14px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9em;
+            min-width: 250px;
+            outline: none;
+        }
+        .config-group input:focus {
+            border-color: var(--red-dark);
+            box-shadow: 0 0 10px rgba(139,0,0,0.3);
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+        .btn-primary { background: var(--red-dark); color: #fff; }
+        .btn-primary:hover { background: var(--red-bright); box-shadow: 0 0 20px rgba(179,0,0,0.5); }
+        .btn-success { background: var(--success); color: #000; }
+        .btn-success:hover { background: #00e673; }
+        .btn-warning { background: var(--warning); color: #000; }
+        .btn-warning:hover { background: #ffbb33; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: #ff3333; }
+        .btn-sm { padding: 6px 12px; font-size: 0.75em; }
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px 20px;
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+        .stat-card .number { font-size: 2em; font-weight: 900; color: var(--red-bright); }
+        .stat-card .label { font-size: 0.75em; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            overflow-x: auto;
+        }
+        .table-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .table-header h2 { font-size: 1.1em; letter-spacing: 2px; color: var(--text-primary); }
+        .search-input {
+            padding: 8px 14px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.85em;
+            outline: none;
+            min-width: 200px;
+        }
+        .search-input:focus { border-color: var(--red-dark); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
+        th {
+            background: rgba(139,0,0,0.2);
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--red-bright);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.75em;
+            white-space: nowrap;
+        }
+        td {
+            padding: 10px;
+            border-top: 1px solid rgba(42,0,0,0.5);
+            vertical-align: middle;
+        }
+        tr:hover td { background: rgba(139,0,0,0.05); }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .badge-pendiente { background: rgba(255,170,0,0.2); color: #ffaa00; }
+        .badge-pagado { background: rgba(0,204,102,0.2); color: #00cc66; }
+        .badge-cancelado { background: rgba(230,0,0,0.2); color: #e60000; }
+        .actions { display: flex; gap: 5px; flex-wrap: wrap; }
+        .editable {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        .editable:hover { background: rgba(139,0,0,0.2); }
+        .editing { background: rgba(139,0,0,0.3) !important; outline: 1px solid var(--red-bright); }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 40px rgba(139,0,0,0.5);
+        }
+        .modal h3 { color: var(--red-bright); margin-bottom: 15px; letter-spacing: 2px; }
+        .modal p { color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+        .modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+        .notification.show { display: block; }
+        .notification.success { background: rgba(0,204,102,0.9); color: #000; }
+        .notification.error { background: rgba(230,0,0,0.9); color: #fff; }
+        .notification.info { background: rgba(255,170,0,0.9); color: #000; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-muted);
+            border-top: 2px solid var(--red-bright);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 768px) {
+            .config-panel { flex-direction: column; }
+            .config-group input { min-width: 100%; }
+            th, td { font-size: 0.7em; padding: 6px 4px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>FIFTYS HOP</h1>
+            <p>PANEL DE ADMINISTRACIÓN</p>
+        </div>
+
+        <div class="config-panel">
+            <div class="config-group">
+                <label>Token de GitHub</label>
+                <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+            </div>
+            <div class="config-group">
+                <label>Repositorio</label>
+                <input type="text" id="repoName" placeholder="TU_USUARIO/fiftyshop" value="TU_USUARIO/fiftyshop">
+            </div>
+            <button class="btn btn-primary" onclick="inicializar()">🔗 Conectar y Cargar</button>
+            <button class="btn btn-success" onclick="refrescarDatos()">🔄 Refrescar</button>
+            <span id="loadingIndicator" style="display:none;"><span class="loading-spinner"></span>Cargando...</span>
+        </div>
+
+        <div class="stats" id="statsPanel" style="display:none;">
+            <div class="stat-card">
+                <div class="number" id="statTotal">0</div>
+                <div class="label">Total Reservas</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="statPendientes" style="color:#ffaa00;">0</div>
+                <div class="label">Pendientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="statPagados" style="color:#00cc66;">0</div>
+                <div class="label">Pagados</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="statHoy">0</div>
+                <div class="label">Hoy</div>
+            </div>
+        </div>
+
+        <div class="table-container" id="tableContainer" style="display:none;">
+            <div class="table-header">
+                <h2>📋 Lista de Reservas</h2>
+                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar por nombre, teléfono o ID..." oninput="filtrarTabla()">
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Dirección</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyReservas"></tbody>
+                </table>
+            </div>
+            <div id="noResults" style="display:none; text-align:center; padding:30px; color:var(--text-muted);">
+                No se encontraron resultados.
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <h3>⚠️ Confirmar Eliminación</h3>
+            <p>¿Estás seguro de que deseas eliminar la reserva <strong id="deleteReservaId"></strong>?<br>Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button class="btn btn-warning" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let GITHUB_API_URL = '';
+        let GITHUB_TOKEN = '';
+        let reservasData = [];
+        let currentSha = null;
+        let reservaAEliminar = null;
+
+        function mostrarNotificacion(mensaje, tipo) {
+            const notif = document.getElementById('notification');
+            notif.textContent = mensaje;
+            notif.className = `notification show ${tipo}`;
+            setTimeout(() => { notif.className = 'notification'; }, 4000);
+        }
+
+        function mostrarCargando(mostrar) {
+            document.getElementById('loadingIndicator').style.display = mostrar ? 'inline' : 'none';
+        }
+
+        function inicializar() {
+            const token = document.getElementById('githubToken').value.trim();
+            const repo = document.getElementById('repoName').value.trim();
+
+            if (!token) { mostrarNotificacion('Ingresa el token de GitHub', 'error'); return; }
+            if (!repo) { mostrarNotificacion('Ingresa el nombre del repositorio', 'error'); return; }
+
+            GITHUB_TOKEN = token;
+            GITHUB_API_URL = `https://api.github.com/repos/${repo}/contents/reservas.json`;
+            cargarReservas();
+        }
+
+        async function cargarReservas() {
+            if (!GITHUB_API_URL || !GITHUB_TOKEN) {
+                mostrarNotificacion('Conecta primero con el token y repositorio', 'error');
+                return;
+            }
+
+            mostrarCargando(true);
+            try {
+                const response = await fetch(GITHUB_API_URL, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        reservasData = [];
+                        currentSha = null;
+                        mostrarNotificacion('reservas.json no encontrado. Se creará al guardar.', 'info');
+                    } else {
+                        throw new Error(`Error ${response.status}: ${response.statusText}`);
+                    }
+                } else {
+                    const data = await response.json();
+                    currentSha = data.sha;
+                    const content = atob(data.content);
+                    reservasData = JSON.parse(content);
+                }
+
+                renderizarTabla();
+                actualizarStats();
+                document.getElementById('statsPanel').style.display = 'flex';
+                document.getElementById('tableContainer').style.display = 'block';
+                mostrarNotificacion(`✅ ${reservasData.length} reservas cargadas`, 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarNotificacion(`Error al cargar: ${error.message}`, 'error');
+            }
+            mostrarCargando(false);
+        }
+
+        function refrescarDatos() {
+            cargarReservas();
+        }
+
+        async function guardarCambios(mensajeCommit = 'Actualizar reservas.json') {
+            if (!GITHUB_API_URL || !GITHUB_TOKEN) {
+                mostrarNotificacion('Conecta primero con el token y repositorio', 'error');
+                return false;
+            }
+
+            mostrarCargando(true);
+            try {
+                const contenido = btoa(unescape(encodeURIComponent(JSON.stringify(reservasData, null, 2))));
+
+                const body = {
+                    message: mensajeCommit,
+                    content: contenido
+                };
+                if (currentSha) body.sha = currentSha;
+
+                const response = await fetch(GITHUB_API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) throw new Error(`Error ${response.status}`);
+
+                const data = await response.json();
+                currentSha = data.content.sha;
+                return true;
+            } catch (error) {
+                console.error('Error al guardar:', error);
+                mostrarNotificacion(`Error al guardar: ${error.message}`, 'error');
+                return false;
+            } finally {
+                mostrarCargando(false);
+            }
+        }
+
+        function cambiarEstado(index, nuevoEstado) {
+            const estadoAnterior = reservasData[index].estadoPago;
+            reservasData[index].estadoPago = nuevoEstado;
+
+            guardarCambios(`Cambio de estado: ${reservasData[index].id} → ${nuevoEstado}`).then(guardado => {
+                if (guardado) {
+                    renderizarTabla();
+                    actualizarStats();
+                    mostrarNotificacion(`✅ Reserva ${reservasData[index].id} marcada como ${nuevoEstado.toUpperCase()}`, 'success');
+                } else {
+                    reservasData[index].estadoPago = estadoAnterior;
+                    renderizarTabla();
+                }
+            });
+        }
+
+        function editarCampo(index, campo, valorActual) {
+            const nuevoValor = prompt(`Editar ${campo}:`, valorActual);
+            if (nuevoValor === null || nuevoValor === valorActual) return;
+
+            const valorAnterior = reservasData[index][campo];
+            reservasData[index][campo] = nuevoValor;
+
+            guardarCambios(`Editar ${campo}: ${reservasData[index].id}`).then(guardado => {
+                if (guardado) {
+                    renderizarTabla();
+                    mostrarNotificacion(`✅ ${campo} actualizado correctamente`, 'success');
+                } else {
+                    reservasData[index][campo] = valorAnterior;
+                    renderizarTabla();
+                }
+            });
+        }
+
+        function confirmarEliminar(index) {
+            reservaAEliminar = index;
+            document.getElementById('deleteReservaId').textContent = reservasData[index].id;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function cerrarModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            reservaAEliminar = null;
+        }
+
+        function eliminarReserva() {
+            if (reservaAEliminar === null) return;
+
+            const reservaEliminada = reservasData[reservaAEliminar];
+            reservasData.splice(reservaAEliminar, 1);
+
+            guardarCambios(`Eliminar reserva: ${reservaEliminada.id}`).then(guardado => {
+                if (guardado) {
+                    renderizarTabla();
+                    actualizarStats();
+                    mostrarNotificacion(`🗑️ Reserva ${reservaEliminada.id} eliminada`, 'info');
+                } else {
+                    reservasData.splice(reservaAEliminar, 0, reservaEliminada);
+                    renderizarTabla();
+                }
+                cerrarModal();
+            });
+        }
+
+        function filtrarTabla() {
+            const filtro = document.getElementById('searchInput').value.toLowerCase();
+            const filas = document.querySelectorAll('#tbodyReservas tr');
+            let visibles = 0;
+
+            filas.forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                const mostrar = texto.includes(filtro);
+                fila.style.display = mostrar ? '' : 'none';
+                if (mostrar) visibles++;
+            });
+
+            document.getElementById('noResults').style.display = visibles === 0 ? 'block' : 'none';
+        }
+
+        function actualizarStats() {
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('statTotal').textContent = reservasData.length;
+            document.getElementById('statPendientes').textContent = reservasData.filter(r => r.estadoPago === 'pendiente').length;
+            document.getElementById('statPagados').textContent = reservasData.filter(r => r.estadoPago === 'pagado').length;
+            document.getElementById('statHoy').textContent = reservasData.filter(r => r.fecha && r.fecha.startsWith(hoy)).length;
+        }
+
+        function renderizarTabla() {
+            const tbody = document.getElementById('tbodyReservas');
+            tbody.innerHTML = '';
+
+            if (reservasData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-muted);">No hay reservas registradas.</td></tr>';
+                return;
+            }
+
+            const ordenadas = [...reservasData].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+            ordenadas.forEach((r, displayIndex) => {
+                const originalIndex = reservasData.indexOf(r);
+                const tr = document.createElement('tr');
+
+                const badgeClass = r.estadoPago === 'pagado' ? 'badge-pagado' : r.estadoPago === 'cancelado' ? 'badge-cancelado' : 'badge-pendiente';
+                const fecha = r.fecha ? new Date(r.fecha).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' }) : 'N/A';
+
+                tr.innerHTML = `
+                    <td><code style="color:var(--red-bright);font-size:0.8em;">${r.id || 'N/A'}</code></td>
+                    <td>${fecha}</td>
+                    <td><span class="editable" ondblclick="editarCampo(${originalIndex}, 'nombre', '${(r.nombre || '').replace(/'/g, "\\'")}')">${r.nombre || 'N/A'}</span></td>
+                    <td><span class="editable" ondblclick="editarCampo(${originalIndex}, 'telefono', '${(r.telefono || '').replace(/'/g, "\\'")}')">${r.telefono || 'N/A'}</span></td>
+                    <td><span class="editable" ondblclick="editarCampo(${originalIndex}, 'correo', '${(r.correo || '').replace(/'/g, "\\'")}')">${r.correo || 'N/A'}</span></td>
+                    <td><span class="editable" style="max-width:150px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" ondblclick="editarCampo(${originalIndex}, 'direccion', '${(r.direccion || '').replace(/'/g, "\\'").replace(/\n/g, ' ')}')" title="${(r.direccion || '').replace(/"/g, '&quot;')}">${r.direccion || 'N/A'}</span></td>
+                    <td><span class="badge ${badgeClass}">${(r.estadoPago || 'pendiente').toUpperCase()}</span></td>
+                    <td>
+                        <div class="actions">
+                            ${r.estadoPago === 'pendiente' ? `<button class="btn btn-success btn-sm" onclick="cambiarEstado(${originalIndex}, 'pagado')">✅ Pagado</button>` : ''}
+                            ${r.estadoPago === 'pagado' ? `<button class="btn btn-warning btn-sm" onclick="cambiarEstado(${originalIndex}, 'pendiente')">⏳ Pendiente</button>` : ''}
+                            ${r.estadoPago !== 'cancelado' ? `<button class="btn btn-warning btn-sm" onclick="cambiarEstado(${originalIndex}, 'cancelado')">❌ Cancelar</button>` : ''}
+                            ${r.estadoPago === 'cancelado' ? `<button class="btn btn-primary btn-sm" onclick="cambiarEstado(${originalIndex}, 'pendiente')">🔄 Restaurar</button>` : ''}
+                            <button class="btn btn-danger btn-sm" onclick="confirmarEliminar(${originalIndex})">🗑️</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('noResults').style.display = 'none';
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', eliminarReserva);
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarModal();
+        });
+
+        document.getElementById('repoName').addEventListener('change', function() {
+            const repo = this.value.trim();
+            if (repo && GITHUB_TOKEN) {
+                GITHUB_API_URL = `https://api.github.com/repos/${repo}/contents/reservas.json`;
+            }
+        });
+    </script>
+</body>
+</html>
