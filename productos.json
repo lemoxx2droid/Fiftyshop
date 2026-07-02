@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "PROD-MR3DTGAS",
+    "nombre": "Metodo AntiBots Google ADS",
+    "categoria": "metodo",
+    "descripcion": "Método de ofuscación de códigos web para evitar baneo google ADS.",
+    "precio": "10€",
+    "vendedor": "USR-MR3DPUAC",
+    "fecha": "2026-07-02T10:49:00.868Z",
+    "activo": true
+  }
+]
