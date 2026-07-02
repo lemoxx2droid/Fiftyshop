@@ -1,7 +1,7 @@
 [
   {
     "id": "PROD-MR3INXOE",
-    "nombre": "MÃ©todo desbloqueo IOS ",
+    "nombre": "MÃÂ©todo desbloqueo IOS ",
     "categoria": "metodo",
     "descripcion": "Metodo de desbloqueo de moviles Iphone A12+",
     "precio": "25",
@@ -11,12 +11,12 @@
   },
   {
     "id": "PROD-MR3IQ004",
-    "nombre": "Método ANTIBOTS Google ADS",
+    "nombre": "Metodo ANTIBOTS Google ADS",
     "categoria": "metodo",
-    "descripcion": "Metodo de ofuscación para evitar bloqueo Bots Google ADS en paginas web",
     "precio": "10",
     "vendedor": "USR-MR3DPUAC",
-    "fecha": "2026-07-02T13:06:17.860Z",
-    "activo": true
+    "descripcion": "Metodo de ofuscacion para evitar bloqueo Bots Google ADS en paginas web",
+    "activo": true,
+    "fecha": "2026-07-02T13:06:17.860Z"
   }
 ]
