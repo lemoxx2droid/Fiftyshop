@@ -2,162 +2,139 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fiftyshop - Panel Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fiftyshop - Admin</title>
     <style>
-        :root{--bg:#060606;--bg2:#0f0f0f;--bg3:#181818;--red:#8b0000;--red2:#b30000;--red3:#e60000;--tx:#e0e0e0;--tx2:#b0b0b0;--tx3:#808080;--bd:#2a0000;--inp:#111;--inpb:#3a0000;--ok:#0c6;--warn:#fa0;--err:#e60000;--blue:#0af;--purple:#a0f}
+        :root{--bg:#060606;--bg2:#0f0f0f;--bg3:#181818;--red:#8b0000;--red2:#b30000;--red3:#e60000;--tx:#e0e0e0;--tx2:#b0b0b0;--tx3:#808080;--bd:#2a0000;--inp:#111;--inpb:#3a0000;--ok:#0c6;--warn:#fa0;--err:#e60000;--blue:#0af}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
-        .sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--bd);padding:20px 0;z-index:200;overflow-y:auto}
-        .sidebar .logo{padding:0 20px 20px;border-bottom:1px solid var(--bd);margin-bottom:15px}
-        .sidebar .logo h2{font-size:1.3em;font-weight:900;letter-spacing:3px;background:linear-gradient(180deg,#ff1a1a,#b30000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Georgia',serif}
-        .sidebar .logo p{font-size:.65em;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
-        .sidebar nav a{display:flex;align-items:center;gap:10px;padding:12px 20px;color:var(--tx2);text-decoration:none;font-size:.8em;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .2s;border-left:3px solid transparent}
-        .sidebar nav a:hover,.sidebar nav a.active{color:#fff;background:rgba(139,0,0,0.15);border-left-color:var(--red3)}
-        .sidebar nav a .icon{font-size:1.1em;width:20px;text-align:center}
-        .main{margin-left:220px;padding:25px}
-        .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;flex-wrap:wrap;gap:15px}
-        .topbar h1{font-size:1.5em;font-weight:700;letter-spacing:2px}
-        .topbar .status-dot{width:8px;height:8px;background:var(--ok);border-radius:50%;display:inline-block;margin-right:6px;box-shadow:0 0 8px var(--ok)}
-        .config-bar{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:15px 20px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
-        .config-bar label{font-size:.65em;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px}
-        .config-bar input{background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:8px 12px;font-size:.85em;outline:none;min-width:200px}
-        .config-bar input:focus{border-color:var(--red)}
-        .btn{padding:8px 16px;border:none;border-radius:6px;font-weight:600;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;font-size:.75em;transition:all .2s;white-space:nowrap}
-        .btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red3);box-shadow:0 0 15px rgba(230,0,0,0.3)}
-        .btn-green{background:var(--ok);color:#000}.btn-green:hover{background:#00e673}
-        .btn-yellow{background:var(--warn);color:#000}.btn-yellow:hover{background:#fb3}
-        .btn-blue{background:var(--blue);color:#000}.btn-blue:hover{background:#3bf}
-        .btn-outline{background:transparent;border:1px solid var(--bd);color:var(--tx2)}.btn-outline:hover{border-color:var(--red3);color:#fff}
-        .btn-sm{padding:5px 10px;font-size:.7em}
-        .btn-xs{padding:3px 8px;font-size:.65em}
-        .card{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:20px}
-        .card-header{padding:15px 20px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-        .card-header h3{font-size:.95em;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-        .card-body{padding:20px;overflow-x:auto}
-        .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:20px}
-        .stat-card{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:18px;text-align:center}
-        .stat-card .num{font-size:2em;font-weight:900;color:var(--red3)}
-        .stat-card .lbl{font-size:.65em;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
-        table{width:100%;border-collapse:collapse;font-size:.8em}
-        th{background:rgba(139,0,0,0.15);padding:10px;text-align:left;font-weight:700;color:var(--red3);font-size:.7em;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
-        td{padding:9px 10px;border-bottom:1px solid rgba(42,0,0,0.4);vertical-align:middle}
-        tr:hover td{background:rgba(139,0,0,0.04)}
-        .badge{display:inline-block;padding:3px 10px;border-radius:15px;font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding:10px;-webkit-tap-highlight-color:transparent}
+        .header{text-align:center;padding:15px 0;border-bottom:1px solid var(--bd);margin-bottom:10px}
+        .header h1{font-size:1.5em;font-weight:900;letter-spacing:3px;background:linear-gradient(180deg,#ff1a1a,#b30000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Georgia',serif}
+        .config-row{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px;background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:10px}
+        .config-row input{background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:8px 10px;font-size:.8em;outline:none;flex:1;min-width:120px}
+        .config-row input:focus{border-color:var(--red)}
+        .btn{padding:8px 14px;border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:.75em;text-transform:uppercase;letter-spacing:.5px;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+        .btn-red{background:var(--red);color:#fff}.btn-red:active{background:var(--red3)}
+        .btn-green{background:var(--ok);color:#000}.btn-green:active{background:#00e673}
+        .btn-yellow{background:var(--warn);color:#000}.btn-yellow:active{background:#fb3}
+        .btn-blue{background:var(--blue);color:#000}.btn-blue:active{background:#3bf}
+        .btn-outline{background:transparent;border:1px solid var(--bd);color:var(--tx2)}
+        .btn-xs{padding:5px 8px;font-size:.65em;border-radius:4px}
+        .tabs{display:flex;gap:4px;margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+        .tabs::-webkit-scrollbar{display:none}
+        .tab-btn{padding:10px 14px;background:var(--bg2);border:1px solid var(--bd);color:var(--tx2);border-radius:8px;font-size:.75em;font-weight:600;text-transform:uppercase;letter-spacing:1px;cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
+        .tab-btn.active{background:var(--red);color:#fff;border-color:var(--red)}
+        .tab-panel{display:none}
+        .tab-panel.active{display:block}
+        .card{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:10px}
+        .card-header{padding:12px;border-bottom:1px solid var(--bd);font-size:.85em;font-weight:700;letter-spacing:1px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+        .card-body{padding:10px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+        .stats-row{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
+        .stats-row::-webkit-scrollbar{display:none}
+        .stat-card{background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:12px;text-align:center;flex:1;min-width:80px;flex-shrink:0}
+        .stat-card .num{font-size:1.3em;font-weight:900;color:var(--red3)}
+        .stat-card .lbl{font-size:.55em;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+        .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:-10px;padding:10px}
+        table{width:100%;border-collapse:collapse;font-size:.7em;min-width:600px}
+        th{background:rgba(139,0,0,0.15);padding:8px 6px;text-align:left;font-weight:700;color:var(--red3);font-size:.75em;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;position:sticky;top:0}
+        td{padding:7px 6px;border-bottom:1px solid rgba(42,0,0,0.4);vertical-align:middle}
+        tr:active td{background:rgba(139,0,0,0.08)}
+        .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.7em;font-weight:700;text-transform:uppercase}
         .badge-pendiente{background:rgba(255,170,0,0.2);color:#fa0}.badge-pagado{background:rgba(0,204,102,0.2);color:#0c6}
         .badge-receta{background:rgba(255,170,0,0.2);color:#fa0}.badge-metodo{background:rgba(0,180,255,0.2);color:#0af}.badge-producto{background:rgba(0,204,102,0.2);color:#0c6}
         .badge-activo{background:rgba(0,204,102,0.2);color:#0c6}.badge-inactivo{background:rgba(230,0,0,0.2);color:#e60000}
-        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:1000;justify-content:center;align-items:center;padding:20px}
+        .actions-cell{display:flex;gap:3px;flex-wrap:wrap}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:1000;justify-content:center;align-items:flex-start;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
         .modal-overlay.active{display:flex}
-        .modal{background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:30px;width:100%;max-width:550px;max-height:85vh;overflow-y:auto;box-shadow:0 0 60px rgba(139,0,0,0.4)}
-        .modal h3{font-size:1.1em;font-weight:700;letter-spacing:1px;margin-bottom:20px;color:var(--red3);text-transform:uppercase}
-        .modal .form-group{margin-bottom:15px}
-        .modal .form-group label{display:block;font-size:.7em;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-        .modal .form-group input,.modal .form-group textarea,.modal .form-group select{width:100%;padding:10px 14px;background:var(--inp);border:1.5px solid var(--inpb);border-radius:8px;color:var(--tx);font-size:.9em;outline:none;font-family:inherit}
-        .modal .form-group input:focus,.modal .form-group textarea:focus,.modal .form-group select:focus{border-color:var(--red3)}
-        .modal .form-group textarea{resize:vertical;min-height:80px}
-        .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
-        .notification{position:fixed;top:20px;right:20px;padding:14px 22px;border-radius:10px;font-weight:600;z-index:2000;animation:slideIn .3s ease;display:none;font-size:.85em;letter-spacing:.5px}
+        .modal{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:20px;width:100%;max-width:500px;margin:auto;box-shadow:0 0 60px rgba(139,0,0,0.4)}
+        .modal h3{font-size:1em;font-weight:700;letter-spacing:1px;margin-bottom:15px;color:var(--red3);text-transform:uppercase}
+        .modal .form-group{margin-bottom:12px}
+        .modal .form-group label{display:block;font-size:.65em;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+        .modal .form-group input,.modal .form-group textarea,.modal .form-group select{width:100%;padding:10px 12px;background:var(--inp);border:1.5px solid var(--inpb);border-radius:8px;color:var(--tx);font-size:.85em;outline:none;font-family:inherit}
+        .modal .form-group textarea{resize:vertical;min-height:70px}
+        .modal .form-group select{appearance:none;-webkit-appearance:none}
+        .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px}
+        .notification{position:fixed;top:10px;left:10px;right:10px;padding:12px 16px;border-radius:10px;font-weight:600;z-index:2000;animation:slideIn .3s ease;display:none;font-size:.8em;text-align:center;pointer-events:none}
         .notification.show{display:block}
-        .notification.success{background:#0c6;color:#000}.notification.error{background:var(--err);color:#fff}.notification.info{background:var(--blue);color:#000}
-        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-        .tab-panel{display:none}.tab-panel.active{display:block}
-        .actions-cell{display:flex;gap:4px;flex-wrap:wrap}
-        .editable-cell{cursor:pointer;transition:all .15s;border-radius:3px;padding:2px 4px;margin:-2px -4px}
-        .editable-cell:hover{background:rgba(139,0,0,0.2);color:#fff}
-        .empty-state{text-align:center;padding:40px;color:var(--tx3)}
-        .empty-state .icon{font-size:3em;margin-bottom:10px}
-        @media(max-width:768px){.sidebar{display:none}.main{margin-left:0}table{font-size:.65em}th,td{padding:6px 4px}.stats-row{grid-template-columns:repeat(2,1fr)}}
+        .notification.success{background:var(--ok);color:#000}.notification.error{background:var(--err);color:#fff}.notification.info{background:var(--blue);color:#000}
+        @keyframes slideIn{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+        .empty-state{text-align:center;padding:30px;color:var(--tx3);font-size:.8em}
+        .empty-state .icon{font-size:2.5em;margin-bottom:8px;display:block}
+        @media(min-width:768px){
+            body{padding:20px}
+            .header h1{font-size:2em}
+            table{font-size:.8em}
+            .btn-xs{padding:6px 10px;font-size:.7em}
+        }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo"><h2>FIFTYS HOP</h2><p>Admin Panel</p></div>
-        <nav>
-            <a href="#" class="active" onclick="switchTab('reservas',this)" data-tab="reservas"><span class="icon">📋</span> Reservas</a>
-            <a href="#" onclick="switchTab('productos',this)" data-tab="productos"><span class="icon">📦</span> Productos</a>
-            <a href="#" onclick="switchTab('vendedores',this)" data-tab="vendedores"><span class="icon">👤</span> Vendedores</a>
-            <a href="#" onclick="switchTab('reportes',this)" data-tab="reportes"><span class="icon">⚠️</span> Reportes</a>
-        </nav>
+    <div class="header"><h1>FIFTYS HOP</h1><p style="color:var(--tx3);font-size:.65em;letter-spacing:2px">ADMIN PANEL</p></div>
+
+    <div class="config-row">
+        <input type="password" id="githubToken" placeholder="Token GitHub (ghp_...)">
+        <input type="text" id="repoName" value="lemoxx2droid/fiftyshop" placeholder="usuario/repo" style="max-width:180px">
+        <button class="btn btn-red" onclick="conectar()">Conectar</button>
     </div>
 
-    <div class="main">
-        <div class="topbar">
-            <h1>Panel de Administración</h1>
-            <span style="font-size:.8em;color:var(--tx3)"><span class="status-dot"></span> Conectado</span>
-        </div>
+    <div class="stats-row" id="statsRow" style="display:none">
+        <div class="stat-card"><div class="num" id="statReservas">0</div><div class="lbl">Reservas</div></div>
+        <div class="stat-card"><div class="num" id="statPendientes" style="color:#fa0">0</div><div class="lbl">Pendientes</div></div>
+        <div class="stat-card"><div class="num" id="statProductos" style="color:#0af">0</div><div class="lbl">Productos</div></div>
+        <div class="stat-card"><div class="num" id="statVendedores" style="color:#a0f">0</div><div class="lbl">Vendedores</div></div>
+        <div class="stat-card"><div class="num" id="statReportes" style="color:#fa0">0</div><div class="lbl">Reportes</div></div>
+    </div>
 
-        <div class="config-bar">
-            <div><label>Token GitHub</label><input type="password" id="githubToken" placeholder="ghp_..."></div>
-            <div><label>Repositorio</label><input type="text" id="repoName" value="lemoxx2droid/fiftyshop"></div>
-            <button class="btn btn-red" onclick="conectar()">🔗 Conectar</button>
-            <button class="btn btn-outline" onclick="cargarTodo()">🔄 Refrescar Todo</button>
-        </div>
+    <div class="tabs" id="tabsNav">
+        <button class="tab-btn active" data-tab="reservas">📋 Reservas</button>
+        <button class="tab-btn" data-tab="productos">📦 Productos</button>
+        <button class="tab-btn" data-tab="vendedores">👤 Vendedores</button>
+        <button class="tab-btn" data-tab="reportes">⚠️ Reportes</button>
+    </div>
 
-        <div class="stats-row" id="statsRow" style="display:none">
-            <div class="stat-card"><div class="num" id="statReservas">0</div><div class="lbl">Reservas</div></div>
-            <div class="stat-card"><div class="num" id="statPendientes" style="color:#fa0">0</div><div class="lbl">Pendientes</div></div>
-            <div class="stat-card"><div class="num" id="statProductos" style="color:#0af">0</div><div class="lbl">Productos</div></div>
-            <div class="stat-card"><div class="num" id="statVendedores" style="color:#a0f">0</div><div class="lbl">Vendedores</div></div>
-            <div class="stat-card"><div class="num" id="statReportes" style="color:#fa0">0</div><div class="lbl">Reportes</div></div>
-        </div>
-
-        <!-- TAB RESERVAS -->
-        <div class="tab-panel active" id="panel-reservas">
-            <div class="card">
-                <div class="card-header"><h3>📋 Agregar Reserva desde JSON</h3></div>
-                <div class="card-body">
-                    <div style="display:flex;gap:10px;flex-wrap:wrap">
-                        <textarea id="jsonReserva" placeholder='Pega el JSON de Telegram aquí...' style="flex:1;min-height:45px;background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:10px;font-size:.85em;outline:none;resize:vertical;font-family:monospace"></textarea>
-                        <button class="btn btn-green" onclick="agregarReserva()">➕ Agregar</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header"><h3>Todas las Reservas</h3><input type="text" placeholder="🔍 Buscar..." oninput="filtrarTabla('reservas',this.value)" style="background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:6px 12px;font-size:.8em;outline:none;width:200px"></div>
-                <div class="card-body">
-                    <table><thead><tr><th>ID</th><th>Fecha</th><th>Producto</th><th>Cliente</th><th>Teléfono</th><th>Correo</th><th>Dirección</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReservas"></tbody></table>
-                </div>
+    <!-- RESERVAS -->
+    <div class="tab-panel active" id="panel-reservas">
+        <div class="card">
+            <div class="card-header">➕ Agregar desde JSON</div>
+            <div class="card-body">
+                <textarea id="jsonReserva" placeholder='Pega el JSON de Telegram...' style="width:100%;background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:10px;font-size:.8em;outline:none;resize:vertical;font-family:monospace;min-height:50px;margin-bottom:8px"></textarea>
+                <button class="btn btn-green" onclick="agregarReserva()" style="width:100%">➕ Agregar Reserva</button>
             </div>
         </div>
+        <div class="card">
+            <div class="card-header">📋 Todas las Reservas</div>
+            <div class="card-body"><div class="table-wrap"><table><thead><tr><th>ID</th><th>Fecha</th><th>Producto</th><th>Cliente</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReservas"></tbody></table></div></div>
+        </div>
+    </div>
 
-        <!-- TAB PRODUCTOS -->
-        <div class="tab-panel" id="panel-productos">
-            <div class="card">
-                <div class="card-header"><h3>📦 Agregar Producto</h3><button class="btn btn-green btn-sm" onclick="abrirModalProducto()">➕ Nuevo Producto</button></div>
-                <div class="card-body">
-                    <table><thead><tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Vendedor</th><th>Activo</th><th>Acciones</th></tr></thead><tbody id="tbodyProductos"></tbody></table>
-                </div>
+    <!-- PRODUCTOS -->
+    <div class="tab-panel" id="panel-productos">
+        <div class="card">
+            <div class="card-header">📦 Productos <button class="btn btn-green btn-xs" onclick="abrirModalProducto()">➕ Nuevo</button></div>
+            <div class="card-body"><div class="table-wrap"><table><thead><tr><th>ID</th><th>Nombre</th><th>Cat</th><th>Precio</th><th>Vend</th><th>Activo</th><th>Acciones</th></tr></thead><tbody id="tbodyProductos"></tbody></table></div></div>
+        </div>
+    </div>
+
+    <!-- VENDEDORES -->
+    <div class="tab-panel" id="panel-vendedores">
+        <div class="card">
+            <div class="card-header">👤 Vendedores <button class="btn btn-green btn-xs" onclick="abrirModalVendedor()">➕ Nuevo</button></div>
+            <div class="card-body"><div class="table-wrap"><table><thead><tr><th>ID</th><th>Nombre</th><th>Val</th><th>Ventas</th><th>Acciones</th></tr></thead><tbody id="tbodyVendedores"></tbody></table></div></div>
+        </div>
+    </div>
+
+    <!-- REPORTES -->
+    <div class="tab-panel" id="panel-reportes">
+        <div class="card">
+            <div class="card-header">➕ Agregar Reporte desde JSON</div>
+            <div class="card-body">
+                <textarea id="jsonReporte" placeholder='Pega el JSON del reporte...' style="width:100%;background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:10px;font-size:.8em;outline:none;resize:vertical;font-family:monospace;min-height:50px;margin-bottom:8px"></textarea>
+                <button class="btn btn-yellow" onclick="agregarReporte()" style="width:100%">➕ Agregar Reporte</button>
             </div>
         </div>
-
-        <!-- TAB VENDEDORES -->
-        <div class="tab-panel" id="panel-vendedores">
-            <div class="card">
-                <div class="card-header"><h3>👤 Agregar Vendedor</h3><button class="btn btn-green btn-sm" onclick="abrirModalVendedor()">➕ Nuevo Vendedor</button></div>
-                <div class="card-body">
-                    <table><thead><tr><th>ID</th><th>Avatar</th><th>Nombre</th><th>Valoración</th><th>Ventas</th><th>Descripción</th><th>Acciones</th></tr></thead><tbody id="tbodyVendedores"></tbody></table>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB REPORTES -->
-        <div class="tab-panel" id="panel-reportes">
-            <div class="card">
-                <div class="card-header"><h3>⚠️ Agregar Reporte desde JSON</h3></div>
-                <div class="card-body">
-                    <div style="display:flex;gap:10px;flex-wrap:wrap">
-                        <textarea id="jsonReporte" placeholder='Pega el JSON del reporte aquí...' style="flex:1;min-height:45px;background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:10px;font-size:.85em;outline:none;resize:vertical;font-family:monospace"></textarea>
-                        <button class="btn btn-yellow" onclick="agregarReporte()">➕ Agregar</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header"><h3>Todos los Reportes</h3></div>
-                <div class="card-body">
-                    <table><thead><tr><th>ID</th><th>Fecha</th><th>ID Reserva</th><th>Cliente</th><th>Teléfono</th><th>Tipo</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReportes"></tbody></table>
-                </div>
-            </div>
+        <div class="card">
+            <div class="card-header">⚠️ Todos los Reportes</div>
+            <div class="card-body"><div class="table-wrap"><table><thead><tr><th>ID</th><th>Fecha</th><th>Reserva</th><th>Cliente</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReportes"></tbody></table></div></div>
         </div>
     </div>
 
@@ -170,12 +147,9 @@
             <div class="form-group"><label>Categoría</label><select id="modalProdCategoria"><option value="receta">Receta</option><option value="metodo">Método</option><option value="producto">Producto</option></select></div>
             <div class="form-group"><label>Precio</label><input type="text" id="modalProdPrecio" placeholder="25€"></div>
             <div class="form-group"><label>Vendedor</label><select id="modalProdVendedor"></select></div>
-            <div class="form-group"><label>Descripción</label><textarea id="modalProdDescripcion" rows="3"></textarea></div>
+            <div class="form-group"><label>Descripción</label><textarea id="modalProdDescripcion" rows="2"></textarea></div>
             <div class="form-group"><label>Activo</label><select id="modalProdActivo"><option value="true">Sí</option><option value="false">No</option></select></div>
-            <div class="modal-actions">
-                <button class="btn btn-outline" onclick="cerrarModal('modalProducto')">Cancelar</button>
-                <button class="btn btn-green" onclick="guardarProducto()">💾 Guardar</button>
-            </div>
+            <div class="modal-actions"><button class="btn btn-outline" onclick="cerrarModal('modalProducto')">Cancelar</button><button class="btn btn-green" onclick="guardarProducto()">💾 Guardar</button></div>
         </div>
     </div>
 
@@ -189,14 +163,11 @@
             <div class="form-group"><label>Valoración</label><input type="number" id="modalVenValoracion" step="0.1" min="0" max="5" value="4.5"></div>
             <div class="form-group"><label>Ventas</label><input type="number" id="modalVenVentas" value="100"></div>
             <div class="form-group"><label>Descripción</label><textarea id="modalVenDescripcion" rows="2"></textarea></div>
-            <div class="modal-actions">
-                <button class="btn btn-outline" onclick="cerrarModal('modalVendedor')">Cancelar</button>
-                <button class="btn btn-green" onclick="guardarVendedor()">💾 Guardar</button>
-            </div>
+            <div class="modal-actions"><button class="btn btn-outline" onclick="cerrarModal('modalVendedor')">Cancelar</button><button class="btn btn-green" onclick="guardarVendedor()">💾 Guardar</button></div>
         </div>
     </div>
 
-    <!-- MODAL EDITAR RESERVA -->
+    <!-- MODAL RESERVA -->
     <div class="modal-overlay" id="modalReserva">
         <div class="modal">
             <h3>Editar Reserva</h3>
@@ -208,10 +179,7 @@
             <div class="form-group"><label>Producto</label><input type="text" id="modalResProducto"></div>
             <div class="form-group"><label>Precio</label><input type="text" id="modalResPrecio"></div>
             <div class="form-group"><label>Estado</label><select id="modalResEstado"><option value="pendiente">Pendiente</option><option value="pagado">Pagado</option></select></div>
-            <div class="modal-actions">
-                <button class="btn btn-outline" onclick="cerrarModal('modalReserva')">Cancelar</button>
-                <button class="btn btn-green" onclick="guardarReserva()">💾 Guardar</button>
-            </div>
+            <div class="modal-actions"><button class="btn btn-outline" onclick="cerrarModal('modalReserva')">Cancelar</button><button class="btn btn-green" onclick="guardarReserva()">💾 Guardar</button></div>
         </div>
     </div>
 
@@ -221,7 +189,21 @@
         var T='',REPO='',R=[],P=[],V=[],RP=[];
         var _shaR=null,_shaP=null,_shaV=null,_shaRP=null;
 
-        function N(m,t){var n=document.getElementById('notification');n.textContent=m;n.className='notification show '+t;setTimeout(function(){n.className='notification'},4000)}
+        function N(m,t){var n=document.getElementById('notification');n.textContent=m;n.className='notification show '+t;setTimeout(function(){n.className='notification'},3500)}
+
+        // Tabs
+        document.addEventListener('DOMContentLoaded',function(){
+            document.querySelectorAll('#tabsNav .tab-btn').forEach(function(btn){
+                btn.addEventListener('click',function(e){
+                    e.preventDefault();
+                    var tab=this.getAttribute('data-tab');
+                    document.querySelectorAll('#tabsNav .tab-btn').forEach(function(b){b.classList.remove('active')});
+                    this.classList.add('active');
+                    document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+                    document.getElementById('panel-'+tab).classList.add('active');
+                })
+            })
+        });
 
         function conectar(){T=document.getElementById('githubToken').value.trim();REPO=document.getElementById('repoName').value.trim();if(!T||!REPO)return N('Llena token y repo','error');cargarTodo()}
 
@@ -248,38 +230,22 @@
         }
 
         function llenarSelectVendedores(){
-            var s=document.getElementById('modalProdVendedor');s.innerHTML='';
+            var s=document.getElementById('modalProdVendedor');if(!s)return;s.innerHTML='';
             V.forEach(function(v){s.innerHTML+='<option value="'+v.id+'">'+v.nombre+'</option>'})
         }
 
-        function switchTab(t,el){
-            document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
-            document.querySelectorAll('.sidebar nav a').forEach(function(a){a.classList.remove('active')});
-            document.getElementById('panel-'+t).classList.add('active');
-            el.classList.add('active')
-        }
-
-        function filtrarTabla(tab,val){
-            var f=val.toLowerCase();
-            document.querySelectorAll('#tbody'+tab.charAt(0).toUpperCase()+tab.slice(1)+' tr').forEach(function(r){r.style.display=r.textContent.toLowerCase().includes(f)?'':'none'})
-        }
-
-        // MODALES
         function cerrarModal(id){document.getElementById(id).classList.remove('active')}
         function abrirModal(id){document.getElementById(id).classList.add('active')}
 
         // ========== RESERVAS ==========
         function renderReservas(){
             var tb=document.getElementById('tbodyReservas');tb.innerHTML='';
-            if(!R.length){tb.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="icon">📋</div>No hay reservas</div></td></tr>';return}
+            if(!R.length){tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><span class="icon">📋</span>No hay reservas</div></td></tr>';return}
             [].concat(R).reverse().forEach(function(r){var i=R.indexOf(r);
                 tb.innerHTML+='<tr>'+
-                    '<td><code style="color:var(--red3)">'+r.id+'</code></td>'+
+                    '<td><code style="color:var(--red3);font-size:.75em">'+r.id+'</code></td>'+
                     '<td>'+new Date(r.fecha).toLocaleDateString('es-ES')+'</td>'+
-                    '<td>'+(r.producto||'-')+'</td>'+
-                    '<td>'+r.nombre+'</td><td>'+r.telefono+'</td><td>'+(r.correo||'-')+'</td>'+
-                    '<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+(r.direccion||'')+'">'+(r.direccion||'-')+'</td>'+
-                    '<td>'+(r.precio||'-')+'</td>'+
+                    '<td>'+(r.producto||'-')+'</td><td>'+r.nombre+'</td><td>'+r.telefono+'</td>'+
                     '<td><span class="badge '+(r.estadoPago==='pagado'?'badge-pagado':'badge-pendiente')+'">'+r.estadoPago+'</span></td>'+
                     '<td><div class="actions-cell">'+
                         '<button class="btn btn-blue btn-xs" onclick="editarReserva('+i+')">✏️</button>'+
@@ -307,7 +273,7 @@
         }
 
         async function guardarReserva(){
-            var i=document.getElementById('modalResIndex').value;
+            var i=parseInt(document.getElementById('modalResIndex').value);
             R[i].nombre=document.getElementById('modalResNombre').value;
             R[i].telefono=document.getElementById('modalResTelefono').value;
             R[i].correo=document.getElementById('modalResCorreo').value;
@@ -320,18 +286,18 @@
         }
 
         async function toggleEstadoR(i){R[i].estadoPago=R[i].estadoPago==='pagado'?'pendiente':'pagado';_shaR=await ghW('reservas.json',R,_shaR,'Toggle estado');renderReservas();updateStats()}
-        async function eliminarR(i){var id=R[i].id;R.splice(i,1);_shaR=await ghW('reservas.json',R,_shaR,'Eliminar: '+id);renderReservas();updateStats();N('🗑️ Eliminada','success')}
+        async function eliminarR(i){if(!confirm('¿Eliminar reserva '+R[i].id+'?'))return;var id=R[i].id;R.splice(i,1);_shaR=await ghW('reservas.json',R,_shaR,'Eliminar: '+id);renderReservas();updateStats();N('🗑️ Eliminada','success')}
 
         // ========== PRODUCTOS ==========
         function renderProductos(){
             var tb=document.getElementById('tbodyProductos');tb.innerHTML='';
-            if(!P.length){tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">📦</div>No hay productos</div></td></tr>';return}
+            if(!P.length){tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><span class="icon">📦</span>No hay productos</div></td></tr>';return}
             P.forEach(function(p,i){
                 var v=V.find(function(x){return x.id===p.vendedor});
                 tb.innerHTML+='<tr>'+
-                    '<td><code>'+p.id+'</code></td><td>'+p.nombre+'</td>'+
-                    '<td><span class="badge badge-'+p.categoria+'">'+p.categoria+'</span></td>'+
-                    '<td>'+p.precio+'</td><td>'+(v?v.nombre:p.vendedor)+'</td>'+
+                    '<td><code style="font-size:.7em">'+p.id+'</code></td><td>'+p.nombre+'</td>'+
+                    '<td><span class="badge badge-'+p.categoria+'">'+p.categoria+'</span></td><td>'+p.precio+'</td>'+
+                    '<td>'+(v?v.nombre:'-')+'</td>'+
                     '<td><span class="badge '+(p.activo?'badge-activo':'badge-inactivo')+'">'+(p.activo?'Sí':'No')+'</span></td>'+
                     '<td><div class="actions-cell">'+
                         '<button class="btn btn-blue btn-xs" onclick="editarProducto('+i+')">✏️</button>'+
@@ -358,28 +324,28 @@
         async function guardarProducto(){
             var idx=document.getElementById('modalProdId').value;
             var p={
-                id:idx!==''?P[idx].id:'PROD-'+Date.now().toString(36).toUpperCase(),
+                id:idx!==''?P[parseInt(idx)].id:'PROD-'+Date.now().toString(36).toUpperCase(),
                 nombre:document.getElementById('modalProdNombre').value,
                 categoria:document.getElementById('modalProdCategoria').value,
                 precio:document.getElementById('modalProdPrecio').value,
                 vendedor:document.getElementById('modalProdVendedor').value,
                 descripcion:document.getElementById('modalProdDescripcion').value,
                 activo:document.getElementById('modalProdActivo').value==='true',
-                fecha:idx!==''?P[idx].fecha:new Date().toISOString()
+                fecha:idx!==''?P[parseInt(idx)].fecha:new Date().toISOString()
             };
-            if(idx!==''){P[idx]=p}else{P.push(p)}
+            if(idx!==''){P[parseInt(idx)]=p}else{P.push(p)}
             _shaP=await ghW('productos.json',P,_shaP,idx!==''?'Editar: '+p.id:'Agregar: '+p.id);
             renderProductos();updateStats();cerrarModal('modalProducto');N(idx!==''?'✅ Producto actualizado':'✅ Producto agregado','success')
         }
 
         async function toggleP(i){P[i].activo=!P[i].activo;_shaP=await ghW('productos.json',P,_shaP,'Toggle');renderProductos()}
-        async function eliminarP(i){var id=P[i].id;P.splice(i,1);_shaP=await ghW('productos.json',P,_shaP,'Eliminar: '+id);renderProductos();updateStats();N('🗑️ Eliminado','success')}
+        async function eliminarP(i){if(!confirm('¿Eliminar producto '+P[i].id+'?'))return;var id=P[i].id;P.splice(i,1);_shaP=await ghW('productos.json',P,_shaP,'Eliminar: '+id);renderProductos();updateStats();N('🗑️ Eliminado','success')}
 
         // ========== VENDEDORES ==========
         function renderVendedores(){
             var tb=document.getElementById('tbodyVendedores');tb.innerHTML='';
-            if(!V.length){tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">👤</div>No hay vendedores</div></td></tr>';return}
-            V.forEach(function(v,i){tb.innerHTML+='<tr><td><code>'+v.id+'</code></td><td style="font-size:1.5em">'+v.avatar+'</td><td>'+v.nombre+'</td><td>★ '+v.valoracion+'</td><td>'+v.ventas+'</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+v.descripcion+'</td><td><div class="actions-cell"><button class="btn btn-blue btn-xs" onclick="editarVendedor('+i+')">✏️</button><button class="btn btn-red btn-xs" style="background:var(--err)" onclick="eliminarV('+i+')">🗑️</button></div></td></tr>'})
+            if(!V.length){tb.innerHTML='<tr><td colspan="5"><div class="empty-state"><span class="icon">👤</span>No hay vendedores</div></td></tr>';return}
+            V.forEach(function(v,i){tb.innerHTML+='<tr><td><code style="font-size:.7em">'+v.id+'</code></td><td>'+v.avatar+' '+v.nombre+'</td><td>★ '+v.valoracion+'</td><td>'+v.ventas+'</td><td><div class="actions-cell"><button class="btn btn-blue btn-xs" onclick="editarVendedor('+i+')">✏️</button><button class="btn btn-red btn-xs" style="background:var(--err)" onclick="eliminarV('+i+')">🗑️</button></div></td></tr>'})
         }
 
         function abrirModalVendedor(idx){
@@ -398,26 +364,26 @@
         async function guardarVendedor(){
             var idx=document.getElementById('modalVenId').value;
             var v={
-                id:idx!==''?V[idx].id:'USR-'+Date.now().toString(36).toUpperCase(),
+                id:idx!==''?V[parseInt(idx)].id:'USR-'+Date.now().toString(36).toUpperCase(),
                 nombre:document.getElementById('modalVenNombre').value,
                 avatar:document.getElementById('modalVenAvatar').value,
                 valoracion:parseFloat(document.getElementById('modalVenValoracion').value)||4.5,
                 ventas:parseInt(document.getElementById('modalVenVentas').value)||100,
                 descripcion:document.getElementById('modalVenDescripcion').value
             };
-            if(idx!==''){V[idx]=v}else{V.push(v)}
+            if(idx!==''){V[parseInt(idx)]=v}else{V.push(v)}
             _shaV=await ghW('vendedores.json',V,_shaV,idx!==''?'Editar: '+v.id:'Agregar: '+v.id);
             renderVendedores();updateStats();llenarSelectVendedores();cerrarModal('modalVendedor');N(idx!==''?'✅ Vendedor actualizado':'✅ Vendedor agregado','success')
         }
 
-        async function eliminarV(i){var id=V[i].id;V.splice(i,1);_shaV=await ghW('vendedores.json',V,_shaV,'Eliminar: '+id);renderVendedores();updateStats();llenarSelectVendedores();N('🗑️ Eliminado','success')}
+        async function eliminarV(i){if(!confirm('¿Eliminar vendedor '+V[i].id+'?'))return;var id=V[i].id;V.splice(i,1);_shaV=await ghW('vendedores.json',V,_shaV,'Eliminar: '+id);renderVendedores();updateStats();llenarSelectVendedores();N('🗑️ Eliminado','success')}
 
         // ========== REPORTES ==========
         function renderReportes(){
             var tb=document.getElementById('tbodyReportes');tb.innerHTML='';
-            if(!RP.length){tb.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="icon">⚠️</div>No hay reportes</div></td></tr>';return}
+            if(!RP.length){tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><span class="icon">⚠️</span>No hay reportes</div></td></tr>';return}
             [].concat(RP).reverse().forEach(function(r){var i=RP.indexOf(r);
-                tb.innerHTML+='<tr><td><code>'+r.id+'</code></td><td>'+new Date(r.fecha).toLocaleDateString('es-ES')+'</td><td>'+(r.idReserva||'-')+'</td><td>'+r.nombre+'</td><td>'+r.telefono+'</td><td>'+r.tipo+'</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.descripcion+'</td><td><span class="badge badge-pendiente">'+r.estado+'</span></td><td><button class="btn btn-red btn-xs" style="background:var(--err)" onclick="eliminarRP('+i+')">🗑️</button></td></tr>'
+                tb.innerHTML+='<tr><td><code style="font-size:.7em">'+r.id+'</code></td><td>'+new Date(r.fecha).toLocaleDateString('es-ES')+'</td><td>'+(r.idReserva||'-')+'</td><td>'+r.nombre+'</td><td>'+r.tipo+'</td><td><span class="badge badge-pendiente">'+r.estado+'</span></td><td><button class="btn btn-red btn-xs" style="background:var(--err)" onclick="eliminarRP('+i+')">🗑️</button></td></tr>'
             })
         }
 
@@ -425,9 +391,14 @@
             try{var j=JSON.parse(document.getElementById('jsonReporte').value);RP.push(j);_shaRP=await ghW('reportes.json',RP,_shaRP,'Agregar: '+j.id);renderReportes();updateStats();document.getElementById('jsonReporte').value='';N('✅ Reporte agregado','success')}catch(e){N('JSON inválido','error')}
         }
 
-        async function eliminarRP(i){var id=RP[i].id;RP.splice(i,1);_shaRP=await ghW('reportes.json',RP,_shaRP,'Eliminar: '+id);renderReportes();updateStats();N('🗑️ Eliminado','success')}
+        async function eliminarRP(i){if(!confirm('¿Eliminar reporte '+RP[i].id+'?'))return;var id=RP[i].id;RP.splice(i,1);_shaRP=await ghW('reportes.json',RP,_shaRP,'Eliminar: '+id);renderReportes();updateStats();N('🗑️ Eliminado','success')}
 
         function renderAll(){renderReservas();renderProductos();renderVendedores();renderReportes()}
+
+        // Cerrar modales al tocar fuera
+        document.querySelectorAll('.modal-overlay').forEach(function(m){
+            m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('active')})
+        });
     </script>
 </body>
 </html>
