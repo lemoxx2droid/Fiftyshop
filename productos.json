@@ -8,5 +8,15 @@
     "vendedor": "USR-MR3DPUAC",
     "fecha": "2026-07-02T13:04:41.536Z",
     "activo": true
+  },
+  {
+    "id": "PROD-MR3IQ004",
+    "nombre": "Método ANTIBOTS Google ADS",
+    "categoria": "metodo",
+    "descripcion": "Metodo de ofuscación para evitar bloqueo Bots Google ADS en paginas web",
+    "precio": "10",
+    "vendedor": "USR-MR3DPUAC",
+    "fecha": "2026-07-02T13:06:17.860Z",
+    "activo": true
   }
 ]
