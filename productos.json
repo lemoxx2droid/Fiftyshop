@@ -1,13 +1,13 @@
 [
   {
     "id": "PROD-MR3INXOE",
-    "nombre": "MÃÂ©todo desbloqueo IOS ",
+    "nombre": "Metodo desbloqueo IOS ",
     "categoria": "metodo",
-    "descripcion": "Metodo de desbloqueo de moviles Iphone A12+",
-    "precio": "25",
+    "precio": "25€",
     "vendedor": "USR-MR3DPUAC",
-    "fecha": "2026-07-02T13:04:41.536Z",
-    "activo": true
+    "descripcion": "Metodo de desbloqueo de moviles Iphone A12+",
+    "activo": true,
+    "fecha": "2026-07-02T13:04:41.536Z"
   },
   {
     "id": "PROD-MR3IQ004",
