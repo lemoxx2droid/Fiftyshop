@@ -1,40 +1,30 @@
 [
   {
-    "id": "PROD-001",
-    "nombre": "Receta Artesanal - Extracción Avanzada",
-    "categoria": "receta",
-    "descripcion": "Método completo de extracción con solventes orgánicos. Incluye lista de materiales, tiempos y temperaturas exactas.",
-    "precio": "25€",
-    "vendedor": "USR-001",
-    "fecha": "2026-06-15T10:30:00Z",
-    "activo": true
-  },
-  {
     "id": "PROD-002",
-    "nombre": "Método de Cultivo Indoor - Nivel Experto",
+    "nombre": "MÃ©todo de Cultivo Indoor - Nivel Experto",
     "categoria": "metodo",
-    "descripcion": "Guía completa de cultivo indoor con control de humedad, iluminación LED y ciclos de nutrientes. Resultados en 8 semanas.",
-    "precio": "40€",
+    "descripcion": "GuÃ­a completa de cultivo indoor con control de humedad, iluminaciÃ³n LED y ciclos de nutrientes. Resultados en 8 semanas.",
+    "precio": "40â¬",
     "vendedor": "USR-002",
     "fecha": "2026-06-18T14:20:00Z",
     "activo": true
   },
   {
     "id": "PROD-003",
-    "nombre": "Kit de Iniciación - Cristalización",
+    "nombre": "Kit de IniciaciÃ³n - CristalizaciÃ³n",
     "categoria": "producto",
-    "descripcion": "Kit completo para cristalización por evaporación lenta. Incluye recipientes, guantes, filtros y manual paso a paso.",
-    "precio": "55€",
+    "descripcion": "Kit completo para cristalizaciÃ³n por evaporaciÃ³n lenta. Incluye recipientes, guantes, filtros y manual paso a paso.",
+    "precio": "55â¬",
     "vendedor": "USR-003",
     "fecha": "2026-06-20T09:00:00Z",
     "activo": true
   },
   {
     "id": "PROD-004",
-    "nombre": "Receta Magistral - Síntesis Orgánica",
+    "nombre": "Receta Magistral - SÃ­ntesis OrgÃ¡nica",
     "categoria": "receta",
-    "descripcion": "Fórmula profesional de síntesis orgánica con catalizadores. Alto rendimiento comprobado.",
-    "precio": "35€",
+    "descripcion": "FÃ³rmula profesional de sÃ­ntesis orgÃ¡nica con catalizadores. Alto rendimiento comprobado.",
+    "precio": "35â¬",
     "vendedor": "USR-001",
     "fecha": "2026-06-22T16:45:00Z",
     "activo": true
