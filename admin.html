@@ -5,115 +5,212 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fiftyshop - Panel Admin</title>
     <style>
-        :root{--bg:#0a0a0a;--bg2:#1a1a1a;--bg3:#1e1e1e;--red:#8b0000;--red2:#b30000;--red3:#e60000;--tx:#e0e0e0;--tx2:#b0b0b0;--tx3:#808080;--bd:#2a0000;--inp:#111;--inpb:#3a0000;--ok:#0c6;--warn:#fa0;--err:#e60000}
+        :root{--bg:#060606;--bg2:#0f0f0f;--bg3:#181818;--red:#8b0000;--red2:#b30000;--red3:#e60000;--tx:#e0e0e0;--tx2:#b0b0b0;--tx3:#808080;--bd:#2a0000;--inp:#111;--inpb:#3a0000;--ok:#0c6;--warn:#fa0;--err:#e60000;--blue:#0af;--purple:#a0f}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);background-image:radial-gradient(ellipse at center,rgba(139,0,0,0.08) 0%,transparent 70%);color:var(--tx);min-height:100vh;padding:20px}
-        .container{max-width:1400px;margin:0 auto}
-        .header{text-align:center;margin-bottom:30px;padding:20px;border-bottom:2px solid var(--bd)}
-        .header h1{font-size:2.5em;font-weight:900;letter-spacing:4px;background:linear-gradient(180deg,#ff1a1a,#b30000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Georgia',serif;margin-bottom:10px}
-        .tabs{display:flex;gap:5px;margin-bottom:20px;flex-wrap:wrap}
-        .tab-btn{padding:10px 20px;background:var(--bg2);border:1px solid var(--bd);color:var(--tx2);cursor:pointer;border-radius:8px 8px 0 0;font-weight:600;letter-spacing:1px;text-transform:uppercase;font-size:.8em}
-        .tab-btn.active{background:var(--red);color:#fff;border-color:var(--red)}
-        .tab-content{display:none}
-        .tab-content.active{display:block}
-        .card{background:var(--bg3);border:1px solid var(--bd);border-radius:0 12px 12px 12px;padding:20px;margin-bottom:20px}
-        .config-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:15px}
-        .config-row label{font-size:.75em;color:var(--tx2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
-        .config-row input,.config-row textarea,.config-row select{padding:10px;background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);font-size:.85em;min-width:200px;outline:none}
-        .config-row textarea{resize:vertical;min-height:50px;width:100%}
-        .btn{padding:8px 16px;border:none;border-radius:6px;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;font-size:.8em}
-        .btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red3)}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+        .sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--bd);padding:20px 0;z-index:200;overflow-y:auto}
+        .sidebar .logo{padding:0 20px 20px;border-bottom:1px solid var(--bd);margin-bottom:15px}
+        .sidebar .logo h2{font-size:1.3em;font-weight:900;letter-spacing:3px;background:linear-gradient(180deg,#ff1a1a,#b30000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Georgia',serif}
+        .sidebar .logo p{font-size:.65em;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+        .sidebar nav a{display:flex;align-items:center;gap:10px;padding:12px 20px;color:var(--tx2);text-decoration:none;font-size:.8em;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .2s;border-left:3px solid transparent}
+        .sidebar nav a:hover,.sidebar nav a.active{color:#fff;background:rgba(139,0,0,0.15);border-left-color:var(--red3)}
+        .sidebar nav a .icon{font-size:1.1em;width:20px;text-align:center}
+        .main{margin-left:220px;padding:25px}
+        .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;flex-wrap:wrap;gap:15px}
+        .topbar h1{font-size:1.5em;font-weight:700;letter-spacing:2px}
+        .topbar .status-dot{width:8px;height:8px;background:var(--ok);border-radius:50%;display:inline-block;margin-right:6px;box-shadow:0 0 8px var(--ok)}
+        .config-bar{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:15px 20px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+        .config-bar label{font-size:.65em;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px}
+        .config-bar input{background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:8px 12px;font-size:.85em;outline:none;min-width:200px}
+        .config-bar input:focus{border-color:var(--red)}
+        .btn{padding:8px 16px;border:none;border-radius:6px;font-weight:600;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;font-size:.75em;transition:all .2s;white-space:nowrap}
+        .btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red3);box-shadow:0 0 15px rgba(230,0,0,0.3)}
         .btn-green{background:var(--ok);color:#000}.btn-green:hover{background:#00e673}
-        .btn-yellow{background:var(--warn);color:#000}
-        .btn-del{background:var(--err);color:#fff}
-        .btn-sm{padding:4px 8px;font-size:.7em}
-        table{width:100%;border-collapse:collapse;font-size:.8em;margin-top:15px}
-        th{background:rgba(139,0,0,0.2);padding:10px 8px;text-align:left;font-weight:700;color:var(--red3);font-size:.75em;text-transform:uppercase;white-space:nowrap}
-        td{padding:8px;border-top:1px solid rgba(42,0,0,0.5)}
-        .badge{display:inline-block;padding:3px 8px;border-radius:12px;font-size:.7em;font-weight:700;text-transform:uppercase}
-        .badge-pendiente{background:rgba(255,170,0,0.2);color:#fa0}
-        .badge-pagado{background:rgba(0,204,102,0.2);color:#0c6}
-        .notification{position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;font-weight:600;z-index:2000;display:none}
+        .btn-yellow{background:var(--warn);color:#000}.btn-yellow:hover{background:#fb3}
+        .btn-blue{background:var(--blue);color:#000}.btn-blue:hover{background:#3bf}
+        .btn-outline{background:transparent;border:1px solid var(--bd);color:var(--tx2)}.btn-outline:hover{border-color:var(--red3);color:#fff}
+        .btn-sm{padding:5px 10px;font-size:.7em}
+        .btn-xs{padding:3px 8px;font-size:.65em}
+        .card{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;overflow:hidden;margin-bottom:20px}
+        .card-header{padding:15px 20px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .card-header h3{font-size:.95em;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+        .card-body{padding:20px;overflow-x:auto}
+        .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:20px}
+        .stat-card{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:18px;text-align:center}
+        .stat-card .num{font-size:2em;font-weight:900;color:var(--red3)}
+        .stat-card .lbl{font-size:.65em;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+        table{width:100%;border-collapse:collapse;font-size:.8em}
+        th{background:rgba(139,0,0,0.15);padding:10px;text-align:left;font-weight:700;color:var(--red3);font-size:.7em;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+        td{padding:9px 10px;border-bottom:1px solid rgba(42,0,0,0.4);vertical-align:middle}
+        tr:hover td{background:rgba(139,0,0,0.04)}
+        .badge{display:inline-block;padding:3px 10px;border-radius:15px;font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+        .badge-pendiente{background:rgba(255,170,0,0.2);color:#fa0}.badge-pagado{background:rgba(0,204,102,0.2);color:#0c6}
+        .badge-receta{background:rgba(255,170,0,0.2);color:#fa0}.badge-metodo{background:rgba(0,180,255,0.2);color:#0af}.badge-producto{background:rgba(0,204,102,0.2);color:#0c6}
+        .badge-activo{background:rgba(0,204,102,0.2);color:#0c6}.badge-inactivo{background:rgba(230,0,0,0.2);color:#e60000}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:1000;justify-content:center;align-items:center;padding:20px}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:30px;width:100%;max-width:550px;max-height:85vh;overflow-y:auto;box-shadow:0 0 60px rgba(139,0,0,0.4)}
+        .modal h3{font-size:1.1em;font-weight:700;letter-spacing:1px;margin-bottom:20px;color:var(--red3);text-transform:uppercase}
+        .modal .form-group{margin-bottom:15px}
+        .modal .form-group label{display:block;font-size:.7em;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+        .modal .form-group input,.modal .form-group textarea,.modal .form-group select{width:100%;padding:10px 14px;background:var(--inp);border:1.5px solid var(--inpb);border-radius:8px;color:var(--tx);font-size:.9em;outline:none;font-family:inherit}
+        .modal .form-group input:focus,.modal .form-group textarea:focus,.modal .form-group select:focus{border-color:var(--red3)}
+        .modal .form-group textarea{resize:vertical;min-height:80px}
+        .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+        .notification{position:fixed;top:20px;right:20px;padding:14px 22px;border-radius:10px;font-weight:600;z-index:2000;animation:slideIn .3s ease;display:none;font-size:.85em;letter-spacing:.5px}
         .notification.show{display:block}
-        .notification.success{background:rgba(0,204,102,0.9);color:#000}
-        .notification.error{background:rgba(230,0,0,0.9);color:#fff}
-        @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
-        @media(max-width:768px){table{font-size:.65em}th,td{padding:4px}}
+        .notification.success{background:#0c6;color:#000}.notification.error{background:var(--err);color:#fff}.notification.info{background:var(--blue);color:#000}
+        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        .tab-panel{display:none}.tab-panel.active{display:block}
+        .actions-cell{display:flex;gap:4px;flex-wrap:wrap}
+        .editable-cell{cursor:pointer;transition:all .15s;border-radius:3px;padding:2px 4px;margin:-2px -4px}
+        .editable-cell:hover{background:rgba(139,0,0,0.2);color:#fff}
+        .empty-state{text-align:center;padding:40px;color:var(--tx3)}
+        .empty-state .icon{font-size:3em;margin-bottom:10px}
+        @media(max-width:768px){.sidebar{display:none}.main{margin-left:0}table{font-size:.65em}th,td{padding:6px 4px}.stats-row{grid-template-columns:repeat(2,1fr)}}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header"><h1>FIFTYS HOP</h1><p style="color:var(--tx3)">PANEL DE ADMINISTRACIÓN</p></div>
+    <div class="sidebar">
+        <div class="logo"><h2>FIFTYS HOP</h2><p>Admin Panel</p></div>
+        <nav>
+            <a href="#" class="active" onclick="switchTab('reservas',this)" data-tab="reservas"><span class="icon">📋</span> Reservas</a>
+            <a href="#" onclick="switchTab('productos',this)" data-tab="productos"><span class="icon">📦</span> Productos</a>
+            <a href="#" onclick="switchTab('vendedores',this)" data-tab="vendedores"><span class="icon">👤</span> Vendedores</a>
+            <a href="#" onclick="switchTab('reportes',this)" data-tab="reportes"><span class="icon">⚠️</span> Reportes</a>
+        </nav>
+    </div>
 
-        <div class="config-row">
-            <div><label>Token GitHub</label><input type="password" id="githubToken" placeholder="ghp_..." style="width:250px"></div>
-            <div><label>Repo</label><input type="text" id="repoName" value="lemoxx2droid/fiftyshop" style="width:200px"></div>
-            <button class="btn btn-red" onclick="conectar()">🔗 Conectar</button>
+    <div class="main">
+        <div class="topbar">
+            <h1>Panel de Administración</h1>
+            <span style="font-size:.8em;color:var(--tx3)"><span class="status-dot"></span> Conectado</span>
         </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('reservas')">📋 Reservas</button>
-            <button class="tab-btn" onclick="switchTab('productos')">📦 Productos</button>
-            <button class="tab-btn" onclick="switchTab('vendedores')">👤 Vendedores</button>
-            <button class="tab-btn" onclick="switchTab('reportes')">⚠️ Reportes</button>
+        <div class="config-bar">
+            <div><label>Token GitHub</label><input type="password" id="githubToken" placeholder="ghp_..."></div>
+            <div><label>Repositorio</label><input type="text" id="repoName" value="lemoxx2droid/fiftyshop"></div>
+            <button class="btn btn-red" onclick="conectar()">🔗 Conectar</button>
+            <button class="btn btn-outline" onclick="cargarTodo()">🔄 Refrescar Todo</button>
+        </div>
+
+        <div class="stats-row" id="statsRow" style="display:none">
+            <div class="stat-card"><div class="num" id="statReservas">0</div><div class="lbl">Reservas</div></div>
+            <div class="stat-card"><div class="num" id="statPendientes" style="color:#fa0">0</div><div class="lbl">Pendientes</div></div>
+            <div class="stat-card"><div class="num" id="statProductos" style="color:#0af">0</div><div class="lbl">Productos</div></div>
+            <div class="stat-card"><div class="num" id="statVendedores" style="color:#a0f">0</div><div class="lbl">Vendedores</div></div>
+            <div class="stat-card"><div class="num" id="statReportes" style="color:#fa0">0</div><div class="lbl">Reportes</div></div>
         </div>
 
         <!-- TAB RESERVAS -->
-        <div class="tab-content active" id="tab-reservas">
+        <div class="tab-panel active" id="panel-reservas">
             <div class="card">
-                <h3 style="color:var(--red3);margin-bottom:10px">Agregar Reserva desde JSON</h3>
-                <div class="config-row">
-                    <textarea id="jsonReserva" placeholder='Pega el JSON de Telegram aquí...' style="flex:1;min-height:50px"></textarea>
-                    <button class="btn btn-green" onclick="agregarReserva()">➕ Agregar</button>
+                <div class="card-header"><h3>📋 Agregar Reserva desde JSON</h3></div>
+                <div class="card-body">
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <textarea id="jsonReserva" placeholder='Pega el JSON de Telegram aquí...' style="flex:1;min-height:45px;background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:10px;font-size:.85em;outline:none;resize:vertical;font-family:monospace"></textarea>
+                        <button class="btn btn-green" onclick="agregarReserva()">➕ Agregar</button>
+                    </div>
                 </div>
-                <button class="btn btn-red" onclick="cargarReservas()" style="margin-top:10px">🔄 Refrescar</button>
-                <table><thead><tr><th>ID</th><th>Fecha</th><th>Producto</th><th>Nombre</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReservas"></tbody></table>
+            </div>
+            <div class="card">
+                <div class="card-header"><h3>Todas las Reservas</h3><input type="text" placeholder="🔍 Buscar..." oninput="filtrarTabla('reservas',this.value)" style="background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:6px 12px;font-size:.8em;outline:none;width:200px"></div>
+                <div class="card-body">
+                    <table><thead><tr><th>ID</th><th>Fecha</th><th>Producto</th><th>Cliente</th><th>Teléfono</th><th>Correo</th><th>Dirección</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReservas"></tbody></table>
+                </div>
             </div>
         </div>
 
         <!-- TAB PRODUCTOS -->
-        <div class="tab-content" id="tab-productos">
+        <div class="tab-panel" id="panel-productos">
             <div class="card">
-                <h3 style="color:var(--red3);margin-bottom:10px">Agregar Producto</h3>
-                <div class="config-row">
-                    <input type="text" id="prodNombre" placeholder="Nombre del producto">
-                    <select id="prodCategoria"><option value="receta">Receta</option><option value="metodo">Método</option><option value="producto">Producto</option></select>
-                    <input type="text" id="prodPrecio" placeholder="Precio (ej: 25€)">
-                    <select id="prodVendedor"></select>
+                <div class="card-header"><h3>📦 Agregar Producto</h3><button class="btn btn-green btn-sm" onclick="abrirModalProducto()">➕ Nuevo Producto</button></div>
+                <div class="card-body">
+                    <table><thead><tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Vendedor</th><th>Activo</th><th>Acciones</th></tr></thead><tbody id="tbodyProductos"></tbody></table>
                 </div>
-                <div class="config-row"><textarea id="prodDescripcion" placeholder="Descripción del producto..." style="width:100%"></textarea></div>
-                <button class="btn btn-green" onclick="agregarProducto()">➕ Agregar Producto</button>
-                <button class="btn btn-red" onclick="cargarProductos()" style="margin-left:10px">🔄 Refrescar</button>
-                <table style="margin-top:15px"><thead><tr><th>ID</th><th>Nombre</th><th>Cat</th><th>Precio</th><th>Vendedor</th><th>Activo</th><th>Acciones</th></tr></thead><tbody id="tbodyProductos"></tbody></table>
             </div>
         </div>
 
         <!-- TAB VENDEDORES -->
-        <div class="tab-content" id="tab-vendedores">
+        <div class="tab-panel" id="panel-vendedores">
             <div class="card">
-                <h3 style="color:var(--red3);margin-bottom:10px">Agregar Vendedor</h3>
-                <div class="config-row">
-                    <input type="text" id="venNombre" placeholder="Nombre">
-                    <input type="text" id="venAvatar" placeholder="Emoji (🧪)">
-                    <input type="text" id="venValoracion" placeholder="Valoración (4.8)">
+                <div class="card-header"><h3>👤 Agregar Vendedor</h3><button class="btn btn-green btn-sm" onclick="abrirModalVendedor()">➕ Nuevo Vendedor</button></div>
+                <div class="card-body">
+                    <table><thead><tr><th>ID</th><th>Avatar</th><th>Nombre</th><th>Valoración</th><th>Ventas</th><th>Descripción</th><th>Acciones</th></tr></thead><tbody id="tbodyVendedores"></tbody></table>
                 </div>
-                <div class="config-row"><textarea id="venDescripcion" placeholder="Descripción..." style="width:100%"></textarea></div>
-                <button class="btn btn-green" onclick="agregarVendedor()">➕ Agregar Vendedor</button>
-                <button class="btn btn-red" onclick="cargarVendedores()" style="margin-left:10px">🔄 Refrescar</button>
-                <table style="margin-top:15px"><thead><tr><th>ID</th><th>Avatar</th><th>Nombre</th><th>Val.</th><th>Acciones</th></tr></thead><tbody id="tbodyVendedores"></tbody></table>
             </div>
         </div>
 
         <!-- TAB REPORTES -->
-        <div class="tab-content" id="tab-reportes">
+        <div class="tab-panel" id="panel-reportes">
             <div class="card">
-                <h3 style="color:var(--warn);margin-bottom:10px">Agregar Reporte desde JSON</h3>
-                <div class="config-row">
-                    <textarea id="jsonReporte" placeholder='Pega el JSON del reporte aquí...' style="flex:1;min-height:50px"></textarea>
-                    <button class="btn btn-yellow" onclick="agregarReporte()">➕ Agregar</button>
+                <div class="card-header"><h3>⚠️ Agregar Reporte desde JSON</h3></div>
+                <div class="card-body">
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <textarea id="jsonReporte" placeholder='Pega el JSON del reporte aquí...' style="flex:1;min-height:45px;background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);padding:10px;font-size:.85em;outline:none;resize:vertical;font-family:monospace"></textarea>
+                        <button class="btn btn-yellow" onclick="agregarReporte()">➕ Agregar</button>
+                    </div>
                 </div>
-                <button class="btn btn-red" onclick="cargarReportes()" style="margin-top:10px">🔄 Refrescar</button>
-                <table><thead><tr><th>ID</th><th>Fecha</th><th>Reserva</th><th>Nombre</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReportes"></tbody></table>
+            </div>
+            <div class="card">
+                <div class="card-header"><h3>Todos los Reportes</h3></div>
+                <div class="card-body">
+                    <table><thead><tr><th>ID</th><th>Fecha</th><th>ID Reserva</th><th>Cliente</th><th>Teléfono</th><th>Tipo</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReportes"></tbody></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PRODUCTO -->
+    <div class="modal-overlay" id="modalProducto">
+        <div class="modal">
+            <h3 id="modalProdTitle">Nuevo Producto</h3>
+            <input type="hidden" id="modalProdId">
+            <div class="form-group"><label>Nombre</label><input type="text" id="modalProdNombre"></div>
+            <div class="form-group"><label>Categoría</label><select id="modalProdCategoria"><option value="receta">Receta</option><option value="metodo">Método</option><option value="producto">Producto</option></select></div>
+            <div class="form-group"><label>Precio</label><input type="text" id="modalProdPrecio" placeholder="25€"></div>
+            <div class="form-group"><label>Vendedor</label><select id="modalProdVendedor"></select></div>
+            <div class="form-group"><label>Descripción</label><textarea id="modalProdDescripcion" rows="3"></textarea></div>
+            <div class="form-group"><label>Activo</label><select id="modalProdActivo"><option value="true">Sí</option><option value="false">No</option></select></div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="cerrarModal('modalProducto')">Cancelar</button>
+                <button class="btn btn-green" onclick="guardarProducto()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VENDEDOR -->
+    <div class="modal-overlay" id="modalVendedor">
+        <div class="modal">
+            <h3 id="modalVenTitle">Nuevo Vendedor</h3>
+            <input type="hidden" id="modalVenId">
+            <div class="form-group"><label>Nombre</label><input type="text" id="modalVenNombre"></div>
+            <div class="form-group"><label>Avatar (emoji)</label><input type="text" id="modalVenAvatar" placeholder="🧪"></div>
+            <div class="form-group"><label>Valoración</label><input type="number" id="modalVenValoracion" step="0.1" min="0" max="5" value="4.5"></div>
+            <div class="form-group"><label>Ventas</label><input type="number" id="modalVenVentas" value="100"></div>
+            <div class="form-group"><label>Descripción</label><textarea id="modalVenDescripcion" rows="2"></textarea></div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="cerrarModal('modalVendedor')">Cancelar</button>
+                <button class="btn btn-green" onclick="guardarVendedor()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR RESERVA -->
+    <div class="modal-overlay" id="modalReserva">
+        <div class="modal">
+            <h3>Editar Reserva</h3>
+            <input type="hidden" id="modalResIndex">
+            <div class="form-group"><label>Nombre</label><input type="text" id="modalResNombre"></div>
+            <div class="form-group"><label>Teléfono</label><input type="text" id="modalResTelefono"></div>
+            <div class="form-group"><label>Correo</label><input type="email" id="modalResCorreo"></div>
+            <div class="form-group"><label>Dirección</label><textarea id="modalResDireccion" rows="2"></textarea></div>
+            <div class="form-group"><label>Producto</label><input type="text" id="modalResProducto"></div>
+            <div class="form-group"><label>Precio</label><input type="text" id="modalResPrecio"></div>
+            <div class="form-group"><label>Estado</label><select id="modalResEstado"><option value="pendiente">Pendiente</option><option value="pagado">Pagado</option></select></div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="cerrarModal('modalReserva')">Cancelar</button>
+                <button class="btn btn-green" onclick="guardarReserva()">💾 Guardar</button>
             </div>
         </div>
     </div>
@@ -121,143 +218,216 @@
     <div class="notification" id="notification"></div>
 
     <script>
-        var T='',API='',R=[],P=[],V=[],RP=[];
+        var T='',REPO='',R=[],P=[],V=[],RP=[];
+        var _shaR=null,_shaP=null,_shaV=null,_shaRP=null;
 
         function N(m,t){var n=document.getElementById('notification');n.textContent=m;n.className='notification show '+t;setTimeout(function(){n.className='notification'},4000)}
 
-        function conectar(){
-            T=document.getElementById('githubToken').value.trim();
-            var repo=document.getElementById('repoName').value.trim();
-            if(!T||!repo)return N('Llena los campos','error');
-            cargarTodo()
-        }
+        function conectar(){T=document.getElementById('githubToken').value.trim();REPO=document.getElementById('repoName').value.trim();if(!T||!REPO)return N('Llena token y repo','error');cargarTodo()}
 
-        async function ghRead(file){
-            var url='https://api.github.com/repos/'+document.getElementById('repoName').value.trim()+'/contents/'+file;
-            var r=await fetch(url,{headers:{'Authorization':'token '+T,'Accept':'application/vnd.github.v3+json'}});
-            if(!r.ok){if(r.status===404)return{data:[],sha:null};throw new Error('Error '+r.status)}
-            var d=await r.json();return{data:JSON.parse(atob(d.content)),sha:d.sha}
-        }
-
-        async function ghWrite(file,data,sha,msg){
-            var url='https://api.github.com/repos/'+document.getElementById('repoName').value.trim()+'/contents/'+file;
-            var c=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
-            var b={message:msg,content:c};if(sha)b.sha=sha;
-            var r=await fetch(url,{method:'PUT',headers:{'Authorization':'token '+T,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(b)});
-            if(!r.ok)throw new Error('Error al guardar');
-            var d=await r.json();return d.content.sha
-        }
+        async function ghR(file){var r=await fetch('https://api.github.com/repos/'+REPO+'/contents/'+file,{headers:{'Authorization':'token '+T,'Accept':'application/vnd.github.v3+json'}});if(!r.ok){if(r.status===404)return{data:[],sha:null};throw new Error('Error '+r.status)}var d=await r.json();return{data:JSON.parse(atob(d.content)),sha:d.sha}}
+        async function ghW(file,data,sha,msg){var c=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));var b={message:msg,content:c};if(sha)b.sha=sha;var r=await fetch('https://api.github.com/repos/'+REPO+'/contents/'+file,{method:'PUT',headers:{'Authorization':'token '+T,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(b)});if(!r.ok){var e=await r.json();throw new Error(e.message)}var d=await r.json();return d.content.sha}
 
         async function cargarTodo(){
             try{
-                var r1=await ghRead('reservas.json');R=r1.data;window._shaR=r1.sha;
-                var r2=await ghRead('productos.json');P=r2.data;window._shaP=r2.sha;
-                var r3=await ghRead('vendedores.json');V=r3.data;window._shaV=r3.sha;
-                var r4=await ghRead('reportes.json');RP=r4.data;window._shaRP=r4.sha;
-                renderReservas();renderProductos();renderVendedores();renderReportes();
-                llenarSelectVendedores();N('✅ Todo cargado','success')
+                var r1=await ghR('reservas.json');R=r1.data;_shaR=r1.sha;
+                var r2=await ghR('productos.json');P=r2.data;_shaP=r2.sha;
+                var r3=await ghR('vendedores.json');V=r3.data;_shaV=r3.sha;
+                var r4=await ghR('reportes.json');RP=r4.data;_shaRP=r4.sha;
+                renderAll();updateStats();llenarSelectVendedores();N('✅ Datos cargados','success')
             }catch(e){N('Error: '+e.message,'error')}
         }
 
-        function switchTab(t){
-            document.querySelectorAll('.tab-content').forEach(function(tc){tc.classList.remove('active')});
-            document.querySelectorAll('.tab-btn').forEach(function(tb){tb.classList.remove('active')});
-            document.getElementById('tab-'+t).classList.add('active');
-            event.target.classList.add('active')
+        function updateStats(){
+            document.getElementById('statsRow').style.display='flex';
+            document.getElementById('statReservas').textContent=R.length;
+            document.getElementById('statPendientes').textContent=R.filter(function(r){return r.estadoPago==='pendiente'}).length;
+            document.getElementById('statProductos').textContent=P.length;
+            document.getElementById('statVendedores').textContent=V.length;
+            document.getElementById('statReportes').textContent=RP.length
         }
 
-        // RESERVAS
+        function llenarSelectVendedores(){
+            var s=document.getElementById('modalProdVendedor');s.innerHTML='';
+            V.forEach(function(v){s.innerHTML+='<option value="'+v.id+'">'+v.nombre+'</option>'})
+        }
+
+        function switchTab(t,el){
+            document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+            document.querySelectorAll('.sidebar nav a').forEach(function(a){a.classList.remove('active')});
+            document.getElementById('panel-'+t).classList.add('active');
+            el.classList.add('active')
+        }
+
+        function filtrarTabla(tab,val){
+            var f=val.toLowerCase();
+            document.querySelectorAll('#tbody'+tab.charAt(0).toUpperCase()+tab.slice(1)+' tr').forEach(function(r){r.style.display=r.textContent.toLowerCase().includes(f)?'':'none'})
+        }
+
+        // MODALES
+        function cerrarModal(id){document.getElementById(id).classList.remove('active')}
+        function abrirModal(id){document.getElementById(id).classList.add('active')}
+
+        // ========== RESERVAS ==========
         function renderReservas(){
             var tb=document.getElementById('tbodyReservas');tb.innerHTML='';
-            if(!R.length){tb.innerHTML='<tr><td colspan="7">Vacío</td></tr>';return}
-            [].concat(R).reverse().forEach(function(r,i){
-                var ri=R.indexOf(r);
-                tb.innerHTML+='<tr><td><code>'+r.id+'</code></td><td>'+new Date(r.fecha).toLocaleDateString()+'</td><td>'+(r.producto||'-')+'</td><td>'+r.nombre+'</td><td>'+r.telefono+'</td><td><span class="badge '+(r.estadoPago==='pagado'?'badge-pagado':'badge-pendiente')+'">'+r.estadoPago+'</span></td><td>'+
-                    (r.estadoPago==='pendiente'?'<button class="btn btn-green btn-sm" onclick="cambiarEstadoR('+ri+')">✅</button> ':'')+
-                    '<button class="btn btn-del btn-sm" onclick="eliminarR('+ri+')">🗑️</button></td></tr>'
+            if(!R.length){tb.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="icon">📋</div>No hay reservas</div></td></tr>';return}
+            [].concat(R).reverse().forEach(function(r){var i=R.indexOf(r);
+                tb.innerHTML+='<tr>'+
+                    '<td><code style="color:var(--red3)">'+r.id+'</code></td>'+
+                    '<td>'+new Date(r.fecha).toLocaleDateString('es-ES')+'</td>'+
+                    '<td>'+(r.producto||'-')+'</td>'+
+                    '<td>'+r.nombre+'</td><td>'+r.telefono+'</td><td>'+(r.correo||'-')+'</td>'+
+                    '<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+(r.direccion||'')+'">'+(r.direccion||'-')+'</td>'+
+                    '<td>'+(r.precio||'-')+'</td>'+
+                    '<td><span class="badge '+(r.estadoPago==='pagado'?'badge-pagado':'badge-pendiente')+'">'+r.estadoPago+'</span></td>'+
+                    '<td><div class="actions-cell">'+
+                        '<button class="btn btn-blue btn-xs" onclick="editarReserva('+i+')">✏️</button>'+
+                        '<button class="btn btn-green btn-xs" onclick="toggleEstadoR('+i+')">'+(r.estadoPago==='pagado'?'⏳':'✅')+'</button>'+
+                        '<button class="btn btn-red btn-xs" style="background:var(--err)" onclick="eliminarR('+i+')">🗑️</button>'+
+                    '</div></td></tr>'
             })
         }
 
         async function agregarReserva(){
-            try{var j=JSON.parse(document.getElementById('jsonReserva').value);R.push(j);window._shaR=await ghWrite('reservas.json',R,window._shaR,'Agregar: '+j.id);renderReservas();document.getElementById('jsonReserva').value='';N('✅ Agregada','success')}catch(e){N('Error: '+e.message,'error')}
+            try{var j=JSON.parse(document.getElementById('jsonReserva').value);R.push(j);_shaR=await ghW('reservas.json',R,_shaR,'Agregar: '+j.id);renderReservas();updateStats();document.getElementById('jsonReserva').value='';N('✅ Reserva agregada','success')}catch(e){N('JSON inválido','error')}
         }
 
-        async function cambiarEstadoR(i){R[i].estadoPago=R[i].estadoPago==='pagado'?'pendiente':'pagado';window._shaR=await ghWrite('reservas.json',R,window._shaR,'Estado');renderReservas()}
-        async function eliminarR(i){R.splice(i,1);window._shaR=await ghWrite('reservas.json',R,window._shaR,'Eliminar');renderReservas();N('🗑️ Eliminada','success')}
-        async function cargarReservas(){var r=await ghRead('reservas.json');R=r.data;window._shaR=r.sha;renderReservas()}
-
-        // PRODUCTOS
-        function llenarSelectVendedores(){
-            var sel=document.getElementById('prodVendedor');sel.innerHTML='';
-            V.forEach(function(v){sel.innerHTML+='<option value="'+v.id+'">'+v.nombre+'</option>'})
+        function editarReserva(i){
+            var r=R[i];
+            document.getElementById('modalResIndex').value=i;
+            document.getElementById('modalResNombre').value=r.nombre||'';
+            document.getElementById('modalResTelefono').value=r.telefono||'';
+            document.getElementById('modalResCorreo').value=r.correo||'';
+            document.getElementById('modalResDireccion').value=r.direccion||'';
+            document.getElementById('modalResProducto').value=r.producto||'';
+            document.getElementById('modalResPrecio').value=r.precio||'';
+            document.getElementById('modalResEstado').value=r.estadoPago||'pendiente';
+            abrirModal('modalReserva')
         }
 
+        async function guardarReserva(){
+            var i=document.getElementById('modalResIndex').value;
+            R[i].nombre=document.getElementById('modalResNombre').value;
+            R[i].telefono=document.getElementById('modalResTelefono').value;
+            R[i].correo=document.getElementById('modalResCorreo').value;
+            R[i].direccion=document.getElementById('modalResDireccion').value;
+            R[i].producto=document.getElementById('modalResProducto').value;
+            R[i].precio=document.getElementById('modalResPrecio').value;
+            R[i].estadoPago=document.getElementById('modalResEstado').value;
+            _shaR=await ghW('reservas.json',R,_shaR,'Editar: '+R[i].id);
+            renderReservas();updateStats();cerrarModal('modalReserva');N('✅ Reserva actualizada','success')
+        }
+
+        async function toggleEstadoR(i){R[i].estadoPago=R[i].estadoPago==='pagado'?'pendiente':'pagado';_shaR=await ghW('reservas.json',R,_shaR,'Toggle estado');renderReservas();updateStats()}
+        async function eliminarR(i){var id=R[i].id;R.splice(i,1);_shaR=await ghW('reservas.json',R,_shaR,'Eliminar: '+id);renderReservas();updateStats();N('🗑️ Eliminada','success')}
+
+        // ========== PRODUCTOS ==========
         function renderProductos(){
             var tb=document.getElementById('tbodyProductos');tb.innerHTML='';
+            if(!P.length){tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">📦</div>No hay productos</div></td></tr>';return}
             P.forEach(function(p,i){
-                tb.innerHTML+='<tr><td><code>'+p.id+'</code></td><td>'+p.nombre+'</td><td>'+p.categoria+'</td><td>'+p.precio+'</td><td>'+p.vendedor+'</td><td>'+(p.activo?'✅':'❌')+'</td><td>'+
-                    '<button class="btn btn-yellow btn-sm" onclick="toggleP('+i+')">'+(p.activo?'Desactivar':'Activar')+'</button> '+
-                    '<button class="btn btn-del btn-sm" onclick="eliminarP('+i+')">🗑️</button></td></tr>'
+                var v=V.find(function(x){return x.id===p.vendedor});
+                tb.innerHTML+='<tr>'+
+                    '<td><code>'+p.id+'</code></td><td>'+p.nombre+'</td>'+
+                    '<td><span class="badge badge-'+p.categoria+'">'+p.categoria+'</span></td>'+
+                    '<td>'+p.precio+'</td><td>'+(v?v.nombre:p.vendedor)+'</td>'+
+                    '<td><span class="badge '+(p.activo?'badge-activo':'badge-inactivo')+'">'+(p.activo?'Sí':'No')+'</span></td>'+
+                    '<td><div class="actions-cell">'+
+                        '<button class="btn btn-blue btn-xs" onclick="editarProducto('+i+')">✏️</button>'+
+                        '<button class="btn btn-yellow btn-xs" onclick="toggleP('+i+')">'+(p.activo?'❌':'✅')+'</button>'+
+                        '<button class="btn btn-red btn-xs" style="background:var(--err)" onclick="eliminarP('+i+')">🗑️</button>'+
+                    '</div></td></tr>'
             })
         }
 
-        async function agregarProducto(){
-            var p={
-                id:'PROD-'+Date.now().toString(36).toUpperCase(),
-                nombre:document.getElementById('prodNombre').value,
-                categoria:document.getElementById('prodCategoria').value,
-                descripcion:document.getElementById('prodDescripcion').value,
-                precio:document.getElementById('prodPrecio').value,
-                vendedor:document.getElementById('prodVendedor').value,
-                fecha:new Date().toISOString(),
-                activo:true
-            };
-            P.push(p);window._shaP=await ghWrite('productos.json',P,window._shaP,'Agregar: '+p.id);renderProductos();N('✅ Agregado','success')
+        function abrirModalProducto(idx){
+            document.getElementById('modalProdTitle').textContent=idx!==undefined?'Editar Producto':'Nuevo Producto';
+            document.getElementById('modalProdId').value=idx!==undefined?idx:'';
+            document.getElementById('modalProdNombre').value=idx!==undefined?P[idx].nombre:'';
+            document.getElementById('modalProdCategoria').value=idx!==undefined?P[idx].categoria:'receta';
+            document.getElementById('modalProdPrecio').value=idx!==undefined?P[idx].precio:'';
+            document.getElementById('modalProdVendedor').value=idx!==undefined?P[idx].vendedor:(V.length?V[0].id:'');
+            document.getElementById('modalProdDescripcion').value=idx!==undefined?P[idx].descripcion:'';
+            document.getElementById('modalProdActivo').value=idx!==undefined?(P[idx].activo?'true':'false'):'true';
+            abrirModal('modalProducto')
         }
 
-        async function toggleP(i){P[i].activo=!P[i].activo;window._shaP=await ghWrite('productos.json',P,window._shaP,'Toggle');renderProductos()}
-        async function eliminarP(i){P.splice(i,1);window._shaP=await ghWrite('productos.json',P,window._shaP,'Eliminar');renderProductos();N('🗑️ Eliminado','success')}
-        async function cargarProductos(){var r=await ghRead('productos.json');P=r.data;window._shaP=r.sha;renderProductos()}
+        function editarProducto(i){abrirModalProducto(i)}
 
-        // VENDEDORES
+        async function guardarProducto(){
+            var idx=document.getElementById('modalProdId').value;
+            var p={
+                id:idx!==''?P[idx].id:'PROD-'+Date.now().toString(36).toUpperCase(),
+                nombre:document.getElementById('modalProdNombre').value,
+                categoria:document.getElementById('modalProdCategoria').value,
+                precio:document.getElementById('modalProdPrecio').value,
+                vendedor:document.getElementById('modalProdVendedor').value,
+                descripcion:document.getElementById('modalProdDescripcion').value,
+                activo:document.getElementById('modalProdActivo').value==='true',
+                fecha:idx!==''?P[idx].fecha:new Date().toISOString()
+            };
+            if(idx!==''){P[idx]=p}else{P.push(p)}
+            _shaP=await ghW('productos.json',P,_shaP,idx!==''?'Editar: '+p.id:'Agregar: '+p.id);
+            renderProductos();updateStats();cerrarModal('modalProducto');N(idx!==''?'✅ Producto actualizado':'✅ Producto agregado','success')
+        }
+
+        async function toggleP(i){P[i].activo=!P[i].activo;_shaP=await ghW('productos.json',P,_shaP,'Toggle');renderProductos()}
+        async function eliminarP(i){var id=P[i].id;P.splice(i,1);_shaP=await ghW('productos.json',P,_shaP,'Eliminar: '+id);renderProductos();updateStats();N('🗑️ Eliminado','success')}
+
+        // ========== VENDEDORES ==========
         function renderVendedores(){
             var tb=document.getElementById('tbodyVendedores');tb.innerHTML='';
-            V.forEach(function(v,i){
-                tb.innerHTML+='<tr><td><code>'+v.id+'</code></td><td>'+v.avatar+'</td><td>'+v.nombre+'</td><td>★ '+v.valoracion+'</td><td><button class="btn btn-del btn-sm" onclick="eliminarV('+i+')">🗑️</button></td></tr>'
-            })
+            if(!V.length){tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">👤</div>No hay vendedores</div></td></tr>';return}
+            V.forEach(function(v,i){tb.innerHTML+='<tr><td><code>'+v.id+'</code></td><td style="font-size:1.5em">'+v.avatar+'</td><td>'+v.nombre+'</td><td>★ '+v.valoracion+'</td><td>'+v.ventas+'</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+v.descripcion+'</td><td><div class="actions-cell"><button class="btn btn-blue btn-xs" onclick="editarVendedor('+i+')">✏️</button><button class="btn btn-red btn-xs" style="background:var(--err)" onclick="eliminarV('+i+')">🗑️</button></div></td></tr>'})
         }
 
-        async function agregarVendedor(){
+        function abrirModalVendedor(idx){
+            document.getElementById('modalVenTitle').textContent=idx!==undefined?'Editar Vendedor':'Nuevo Vendedor';
+            document.getElementById('modalVenId').value=idx!==undefined?idx:'';
+            document.getElementById('modalVenNombre').value=idx!==undefined?V[idx].nombre:'';
+            document.getElementById('modalVenAvatar').value=idx!==undefined?V[idx].avatar:'🧪';
+            document.getElementById('modalVenValoracion').value=idx!==undefined?V[idx].valoracion:4.5;
+            document.getElementById('modalVenVentas').value=idx!==undefined?V[idx].ventas:100;
+            document.getElementById('modalVenDescripcion').value=idx!==undefined?V[idx].descripcion:'';
+            abrirModal('modalVendedor')
+        }
+
+        function editarVendedor(i){abrirModalVendedor(i)}
+
+        async function guardarVendedor(){
+            var idx=document.getElementById('modalVenId').value;
             var v={
-                id:'USR-'+Date.now().toString(36).toUpperCase(),
-                nombre:document.getElementById('venNombre').value,
-                avatar:document.getElementById('venAvatar').value,
-                valoracion:parseFloat(document.getElementById('venValoracion').value)||4.5,
-                ventas:Math.floor(Math.random()*200)+50,
-                descripcion:document.getElementById('venDescripcion').value
+                id:idx!==''?V[idx].id:'USR-'+Date.now().toString(36).toUpperCase(),
+                nombre:document.getElementById('modalVenNombre').value,
+                avatar:document.getElementById('modalVenAvatar').value,
+                valoracion:parseFloat(document.getElementById('modalVenValoracion').value)||4.5,
+                ventas:parseInt(document.getElementById('modalVenVentas').value)||100,
+                descripcion:document.getElementById('modalVenDescripcion').value
             };
-            V.push(v);window._shaV=await ghWrite('vendedores.json',V,window._shaV,'Agregar: '+v.id);renderVendedores();llenarSelectVendedores();N('✅ Agregado','success')
+            if(idx!==''){V[idx]=v}else{V.push(v)}
+            _shaV=await ghW('vendedores.json',V,_shaV,idx!==''?'Editar: '+v.id:'Agregar: '+v.id);
+            renderVendedores();updateStats();llenarSelectVendedores();cerrarModal('modalVendedor');N(idx!==''?'✅ Vendedor actualizado':'✅ Vendedor agregado','success')
         }
 
-        async function eliminarV(i){V.splice(i,1);window._shaV=await ghWrite('vendedores.json',V,window._shaV,'Eliminar');renderVendedores();llenarSelectVendedores();N('🗑️ Eliminado','success')}
-        async function cargarVendedores(){var r=await ghRead('vendedores.json');V=r.data;window._shaV=r.sha;renderVendedores();llenarSelectVendedores()}
+        async function eliminarV(i){var id=V[i].id;V.splice(i,1);_shaV=await ghW('vendedores.json',V,_shaV,'Eliminar: '+id);renderVendedores();updateStats();llenarSelectVendedores();N('🗑️ Eliminado','success')}
 
-        // REPORTES
+        // ========== REPORTES ==========
         function renderReportes(){
             var tb=document.getElementById('tbodyReportes');tb.innerHTML='';
-            if(!RP.length){tb.innerHTML='<tr><td colspan="7">Vacío</td></tr>';return}
-            [].concat(RP).reverse().forEach(function(r,i){
-                var ri=RP.indexOf(r);
-                tb.innerHTML+='<tr><td><code>'+r.id+'</code></td><td>'+new Date(r.fecha).toLocaleDateString()+'</td><td>'+(r.idReserva||'-')+'</td><td>'+r.nombre+'</td><td>'+r.tipo+'</td><td><span class="badge badge-pendiente">'+r.estado+'</span></td><td><button class="btn btn-del btn-sm" onclick="eliminarRP('+ri+')">🗑️</button></td></tr>'
+            if(!RP.length){tb.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="icon">⚠️</div>No hay reportes</div></td></tr>';return}
+            [].concat(RP).reverse().forEach(function(r){var i=RP.indexOf(r);
+                tb.innerHTML+='<tr><td><code>'+r.id+'</code></td><td>'+new Date(r.fecha).toLocaleDateString('es-ES')+'</td><td>'+(r.idReserva||'-')+'</td><td>'+r.nombre+'</td><td>'+r.telefono+'</td><td>'+r.tipo+'</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.descripcion+'</td><td><span class="badge badge-pendiente">'+r.estado+'</span></td><td><button class="btn btn-red btn-xs" style="background:var(--err)" onclick="eliminarRP('+i+')">🗑️</button></td></tr>'
             })
         }
 
         async function agregarReporte(){
-            try{var j=JSON.parse(document.getElementById('jsonReporte').value);RP.push(j);window._shaRP=await ghWrite('reportes.json',RP,window._shaRP,'Agregar: '+j.id);renderReportes();document.getElementById('jsonReporte').value='';N('✅ Agregado','success')}catch(e){N('Error: '+e.message,'error')}
+            try{var j=JSON.parse(document.getElementById('jsonReporte').value);RP.push(j);_shaRP=await ghW('reportes.json',RP,_shaRP,'Agregar: '+j.id);renderReportes();updateStats();document.getElementById('jsonReporte').value='';N('✅ Reporte agregado','success')}catch(e){N('JSON inválido','error')}
         }
 
-        async function eliminarRP(i){RP.splice(i,1);window._shaRP=await ghWrite('reportes.json',RP,window._shaRP,'Eliminar');renderReportes();N('🗑️ Eliminado','success')}
-        async function cargarReportes(){var r=await ghRead('reportes.json');RP=r.data;window._shaRP=r.sha;renderReportes()}
+        async function eliminarRP(i){var id=RP[i].id;RP.splice(i,1);_shaRP=await ghW('reportes.json',RP,_shaRP,'Eliminar: '+id);renderReportes();updateStats();N('🗑️ Eliminado','success')}
+
+        function renderAll(){renderReservas();renderProductos();renderVendedores();renderReportes()}
     </script>
 </body>
 </html>
