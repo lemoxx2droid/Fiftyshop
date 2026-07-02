@@ -1,25 +1,5 @@
 [
   {
-    "id": "PROD-002",
-    "nombre": "MÃ©todo de Cultivo Indoor - Nivel Experto",
-    "categoria": "metodo",
-    "descripcion": "GuÃ­a completa de cultivo indoor con control de humedad, iluminaciÃ³n LED y ciclos de nutrientes. Resultados en 8 semanas.",
-    "precio": "40â¬",
-    "vendedor": "USR-002",
-    "fecha": "2026-06-18T14:20:00Z",
-    "activo": true
-  },
-  {
-    "id": "PROD-003",
-    "nombre": "Kit de IniciaciÃ³n - CristalizaciÃ³n",
-    "categoria": "producto",
-    "descripcion": "Kit completo para cristalizaciÃ³n por evaporaciÃ³n lenta. Incluye recipientes, guantes, filtros y manual paso a paso.",
-    "precio": "55â¬",
-    "vendedor": "USR-003",
-    "fecha": "2026-06-20T09:00:00Z",
-    "activo": true
-  },
-  {
     "id": "PROD-004",
     "nombre": "Receta Magistral - SÃ­ntesis OrgÃ¡nica",
     "categoria": "receta",
