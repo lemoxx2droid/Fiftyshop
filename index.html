@@ -3,217 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fiftyshop - Reservas</title>
+    <title>Fiftyshop - Catálogo</title>
     <style>
-        :root{--bg:#0a0a0a;--bg2:#1a1a1a;--bg3:#1e1e1e;--red:#8b0000;--red2:#b30000;--red3:#e60000;--tx:#e0e0e0;--tx2:#b0b0b0;--tx3:#808080;--bd:#2a0000;--inp:#111;--inpb:#3a0000;--ok:#0c6}
+        :root{--bg:#0a0a0a;--bg2:#1a1a1a;--bg3:#1e1e1e;--red:#8b0000;--red2:#b30000;--red3:#e60000;--tx:#e0e0e0;--tx2:#b0b0b0;--tx3:#808080;--bd:#2a0000;--inp:#111;--inpb:#3a0000;--ok:#0c6;--warn:#fa0}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);background-image:radial-gradient(ellipse at center,rgba(139,0,0,0.08) 0%,transparent 70%);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
-        .container{width:100%;max-width:520px;margin:0 auto}
-        .logo{text-align:center;margin-bottom:10px;padding:20px 0}
-        .logo h1{font-size:3em;font-weight:900;letter-spacing:4px;background:linear-gradient(180deg,#ff1a1a 0%,#b30000 30%,#660000 60%,#330000 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 25px rgba(179,0,0,0.7));font-family:'Georgia',serif}
-        .logo .subtitle{font-size:.85em;color:var(--tx3);letter-spacing:6px;margin-top:2px;text-transform:uppercase}
-        .logo .line{width:100px;height:2px;background:linear-gradient(90deg,transparent,var(--red2),transparent);margin:12px auto}
-        .nav-tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--bg2);border-radius:12px;padding:5px;border:1px solid var(--bd)}
-        .nav-tab{flex:1;padding:12px 16px;border:none;background:transparent;color:var(--tx2);font-size:.9em;font-weight:600;cursor:pointer;border-radius:8px;transition:all .3s;letter-spacing:1px;text-transform:uppercase}
-        .nav-tab.active{background:var(--red);color:#fff;box-shadow:0 0 20px rgba(139,0,0,0.3)}
-        .card{background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:30px;box-shadow:0 0 20px rgba(139,0,0,0.3);position:relative;overflow:hidden}
-        .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red2),var(--red3),var(--red2),transparent)}
-        .section-title{font-size:1.2em;font-weight:700;margin-bottom:20px;text-align:center;text-transform:uppercase;letter-spacing:2px}
-        .section-title span{color:var(--red3)}
-        .form-group{margin-bottom:18px}
-        .form-group label{display:block;margin-bottom:6px;font-size:.8em;font-weight:600;color:var(--tx2);letter-spacing:1px;text-transform:uppercase}
-        .form-group label .optional{color:var(--tx3);font-weight:400;font-size:.85em}
-        .form-group input,.form-group textarea{width:100%;padding:12px 16px;background:var(--inp);border:1.5px solid var(--inpb);border-radius:8px;color:var(--tx);font-size:.95em;transition:all .3s;outline:none;font-family:inherit}
-        .form-group input:focus,.form-group textarea:focus{border-color:var(--red);box-shadow:0 0 15px rgba(139,0,0,0.4),inset 0 0 10px rgba(139,0,0,0.1);background:#1a0a0a}
-        .form-group textarea{resize:vertical;min-height:80px;max-height:150px}
-        .info-text{font-size:.75em;color:var(--tx3);margin-top:4px;display:flex;align-items:center;gap:6px}
-        .info-text .icon{color:var(--red3)}
-        .privacy-notice{background:rgba(139,0,0,0.1);border:1px solid rgba(139,0,0,0.3);border-radius:10px;padding:14px 16px;margin:20px 0;font-size:.78em;color:var(--tx3);text-align:center;line-height:1.5}
-        .btn-submit{width:100%;padding:14px;background:linear-gradient(180deg,#c00 0%,#8b0000 100%);border:none;border-radius:10px;color:#fff;font-size:1em;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;box-shadow:0 4px 20px rgba(139,0,0,0.4)}
-        .btn-submit:hover{background:linear-gradient(180deg,#e60000 0%,#a30000 100%);box-shadow:0 6px 30px rgba(179,0,0,0.6);transform:translateY(-2px)}
-        .btn-submit:disabled{background:#333;cursor:not-allowed;box-shadow:none;color:#666}
-        .notification{display:none;padding:16px;border-radius:10px;margin-top:16px;text-align:center;font-weight:600;animation:fadeIn .4s}
-        .notification.success{display:block;background:rgba(0,204,102,0.15);border:1px solid rgba(0,204,102,0.4);color:#0c6}
-        .notification.error{display:block;background:rgba(230,0,0,0.15);border:1px solid rgba(230,0,0,0.4);color:#e60000}
-        .id-box{background:var(--inp);border:2px dashed var(--red3);border-radius:12px;padding:20px;margin-top:16px;text-align:center;display:none}
-        .id-box .label-id{font-size:.7em;color:var(--tx3);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
-        .id-box .id-value{font-size:1.4em;font-weight:900;color:var(--red3);font-family:monospace;letter-spacing:2px}
-        .id-box .id-warning{font-size:.7em;color:var(--warn);margin-top:8px}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-        .loading{animation:pulse 1.5s infinite}
-        .status-container{text-align:center;padding:10px 0}
-        .status-icon{font-size:3em;margin-bottom:10px}
-        .status-icon.pending{color:#fa0;animation:pulse 2s infinite}
-        .status-icon.paid{color:#0c6}
-        .status-message{font-size:1em;color:var(--tx2);line-height:1.6}
-        .status-message .highlight{color:var(--red3);font-weight:700}
-        .check-status-btn{width:100%;padding:14px;background:var(--bg2);border:1.5px solid var(--inpb);border-radius:10px;color:var(--tx);font-size:.95em;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .3s;text-transform:uppercase;margin-top:10px}
-        .check-status-btn:hover{border-color:var(--red);box-shadow:0 0 20px rgba(139,0,0,0.3);background:rgba(139,0,0,0.15)}
-        .hidden{display:none}
-        @media(max-width:480px){.card{padding:20px 16px}.logo h1{font-size:2.2em}.id-box .id-value{font-size:1.1em}}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);background-image:radial-gradient(ellipse at center,rgba(139,0,0,0.06) 0%,transparent 70%);color:var(--tx);min-height:100vh}
+        .nav-top{background:var(--bg2);border-bottom:1px solid var(--bd);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100}
+        .nav-top .logo-text{font-size:1.5em;font-weight:900;letter-spacing:3px;background:linear-gradient(180deg,#ff1a1a 0%,#b30000 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Georgia',serif}
+        .nav-links{display:flex;gap:12px;flex-wrap:wrap}
+        .nav-links a{color:var(--tx2);text-decoration:none;padding:8px 16px;border-radius:6px;font-size:.85em;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .3s;border:1px solid transparent}
+        .nav-links a:hover,.nav-links a.active{color:var(--red3);border-color:var(--red);background:rgba(139,0,0,0.1)}
+        .container{max-width:1200px;margin:0 auto;padding:20px}
+        .hero{text-align:center;padding:40px 20px;margin-bottom:30px}
+        .hero h1{font-size:2.5em;font-weight:900;letter-spacing:3px;margin-bottom:10px}
+        .hero h1 span{background:linear-gradient(180deg,#ff1a1a 0%,#b30000 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .hero p{color:var(--tx3);font-size:1em;letter-spacing:1px}
+        .hero .line{width:80px;height:2px;background:linear-gradient(90deg,transparent,var(--red2),transparent);margin:15px auto}
+        .categorias{display:flex;gap:10px;margin-bottom:25px;flex-wrap:wrap;justify-content:center}
+        .cat-btn{padding:10px 20px;background:var(--bg2);border:1px solid var(--bd);border-radius:20px;color:var(--tx2);cursor:pointer;font-size:.8em;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .3s}
+        .cat-btn.active,.cat-btn:hover{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 0 15px rgba(139,0,0,0.3)}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+        .producto-card{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer;position:relative}
+        .producto-card:hover{border-color:var(--red);box-shadow:0 0 25px rgba(139,0,0,0.3);transform:translateY(-4px)}
+        .producto-card .card-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+        .producto-card .categoria-badge{padding:4px 10px;border-radius:12px;font-size:.65em;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+        .badge-receta{background:rgba(255,170,0,0.2);color:#fa0}
+        .badge-metodo{background:rgba(0,180,255,0.2);color:#0af}
+        .badge-producto{background:rgba(0,204,102,0.2);color:#0c6}
+        .producto-card .vendedor-avatar{font-size:2em}
+        .producto-card .card-body{padding:20px}
+        .producto-card .card-body h3{font-size:1.1em;margin-bottom:8px;color:var(--tx);letter-spacing:1px}
+        .producto-card .card-body p{font-size:.8em;color:var(--tx3);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+        .producto-card .card-footer{padding:15px 20px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+        .producto-card .precio{font-size:1.3em;font-weight:900;color:var(--red3)}
+        .producto-card .vendedor-info{display:flex;align-items:center;gap:8px}
+        .producto-card .vendedor-nombre{font-size:.75em;color:var(--tx2)}
+        .producto-card .vendedor-stars{color:#fa0;font-size:.75em}
+        .btn-preorden{display:inline-block;padding:8px 16px;background:linear-gradient(180deg,#c00,#8b0000);color:#fff;text-decoration:none;border-radius:6px;font-size:.75em;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .3s}
+        .btn-preorden:hover{background:linear-gradient(180deg,#e60000,#a30000);box-shadow:0 0 15px rgba(179,0,0,0.5)}
+        .footer{text-align:center;padding:30px;color:var(--tx3);font-size:.75em;border-top:1px solid var(--bd);margin-top:40px}
+        .footer a{color:var(--red3);text-decoration:none}
+        @media(max-width:768px){.hero h1{font-size:1.8em}.grid{grid-template-columns:1fr}.nav-links a{font-size:.7em;padding:6px 10px}}
     </style>
 </head>
 <body>
+    <nav class="nav-top">
+        <div class="logo-text">FIFTYS HOP</div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Catálogo</a>
+            <a href="preorden.html">Preordenar</a>
+            <a href="reporte.html">Reportar</a>
+        </div>
+    </nav>
+
     <div class="container">
-        <div class="logo">
-            <h1>FIFTYS HOP</h1>
-            <p class="subtitle">Reservas Exclusivas</p>
+        <div class="hero">
+            <h1>Bienvenido a <span>FIFTYS HOP</span></h1>
+            <p>Recetas, Métodos y Productos Exclusivos</p>
             <div class="line"></div>
         </div>
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('reserva')">Nueva Reserva</button>
-            <button class="nav-tab" onclick="switchTab('estado')">Estado de Pago</button>
+
+        <div class="categorias">
+            <button class="cat-btn active" onclick="filtrar('todas')">Todas</button>
+            <button class="cat-btn" onclick="filtrar('receta')">Recetas</button>
+            <button class="cat-btn" onclick="filtrar('metodo')">Métodos</button>
+            <button class="cat-btn" onclick="filtrar('producto')">Productos</button>
         </div>
-        <div class="card" id="tab-reserva">
-            <h3 class="section-title"><span>◆</span> Formulario de Reserva <span>◆</span></h3>
-            <form id="reservaForm" onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <label>Nombre Completo <span class="optional">(puede ser un alias)</span></label>
-                    <input type="text" id="nombre" placeholder="Ingresa tu nombre o alias..." required>
-                    <p class="info-text"><span class="icon">ℹ</span> No es necesario usar tu nombre real.</p>
-                </div>
-                <div class="form-group">
-                    <label>Número de Teléfono</label>
-                    <input type="tel" id="telefono" placeholder="+52 1 234 567 8901" required>
-                </div>
-                <div class="form-group">
-                    <label>Correo Electrónico</label>
-                    <input type="email" id="correo" placeholder="tucorreo@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Dirección de Envío</label>
-                    <textarea id="direccion" placeholder="Calle, número, colonia, ciudad, estado, código postal..." required></textarea>
-                </div>
-                <div class="privacy-notice">🔒 Todos los datos están protegidos. No hay fuga de información.</div>
-                <button type="submit" class="btn-submit" id="submitBtn">Enviar Datos de Reserva</button>
-            </form>
-            <div id="notification" class="notification"></div>
-            <div class="id-box" id="idBox">
-                <div class="label-id">Tu ID de Reserva</div>
-                <div class="id-value" id="idValue"></div>
-                <div class="id-warning">⚠️ Guarda este ID. Lo necesitarás para consultar el estado de tu pago.</div>
-            </div>
-        </div>
-        <div class="card hidden" id="tab-estado">
-            <h3 class="section-title"><span>◆</span> Verificar Estado de Pago <span>◆</span></h3>
-            <div class="form-group">
-                <label>Número de Teléfono Registrado</label>
-                <input type="tel" id="telConsulta" placeholder="Ingresa el teléfono de tu reserva..." required>
-            </div>
-            <button class="check-status-btn" onclick="consultarEstado()">🔍 Consultar Estado</button>
-            <div id="estadoResultado" style="margin-top:20px">
-                <div class="status-container" id="statusDisplay" style="display:none">
-                    <div class="status-icon pending" id="statusIcon">⏳</div>
-                    <div class="status-message" id="statusMessage"></div>
-                </div>
-            </div>
-            <div id="notificationEstado" class="notification"></div>
-        </div>
+
+        <div class="grid" id="gridProductos"></div>
     </div>
+
+    <div class="footer">
+        <p>© 2026 Fiftyshop. Todos los productos son publicados por vendedores independientes.</p>
+        <p>¿Problemas con tu pedido? <a href="reporte.html">Reportar aquí</a></p>
+    </div>
+
     <script>
-        var TK='8904805084:AAGUj2dSJfFVmCPExt4Tt-kFSSGUpLEPp6E';
-        var CID='7353460594';
+        var productos=[],vendedores=[];
 
-        function switchTab(t){
-            document.getElementById('tab-reserva').classList.toggle('hidden',t!=='reserva');
-            document.getElementById('tab-estado').classList.toggle('hidden',t!=='estado');
-            document.querySelectorAll('.nav-tab').forEach(function(b,i){b.classList.toggle('active',(i===0&&t==='reserva')||(i===1&&t==='estado'))});
-            document.getElementById('notification').className='notification';
-            document.getElementById('notificationEstado').className='notification'
-        }
-        
-        function showNotification(m,ty,tg){
-            var n=document.getElementById(tg||'notification');
-            n.textContent=m;n.className='notification '+ty;
-            setTimeout(function(){n.className='notification'},8000)
-        }
-
-        async function obtenerReservas(){
-            try{var r=await fetch('./reservas.json');if(!r.ok)throw new Error('No se pudo leer');return await r.json()}catch(e){return[]}
-        }
-
-        async function enviarATelegram(datos){
-            var msg='🔴 *NUEVA RESERVA - FIFTYSHOP* 🔴\n\n'+
-                '🆔 *ID:* `'+datos.id+'`\n'+
-                '📅 *Fecha:* '+new Date(datos.fecha).toLocaleString('es-MX')+'\n\n'+
-                '👤 *Nombre:* '+datos.nombre+'\n'+
-                '📱 *Teléfono:* '+datos.telefono+'\n'+
-                '📧 *Correo:* '+datos.correo+'\n'+
-                '📍 *Dirección:* '+datos.direccion+'\n\n'+
-                '💳 *Estado:* PENDIENTE ⏳\n\n'+
-                '📋 *JSON PARA ADMIN:*\n```json\n'+JSON.stringify(datos,null,2)+'\n```';
+        async function cargarDatos(){
             try{
-                var r=await fetch('https://api.telegram.org/bot'+TK+'/sendMessage',{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({chat_id:CID,text:msg,parse_mode:'Markdown'})
-                });
-                var j=await r.json();
-                return j.ok
-            }catch(e){return false}
+                var p=await fetch('./productos.json');
+                productos=await p.json();
+                var v=await fetch('./vendedores.json');
+                vendedores=await v.json();
+                renderizar('todas')
+            }catch(e){console.error(e)}
         }
 
-        async function handleSubmit(e){
-            e.preventDefault();
-            var btn=document.getElementById('submitBtn');
-            var orig=btn.textContent;
-            btn.disabled=true;btn.textContent='ENVIANDO...';btn.classList.add('loading');
-            
-            var datos={
-                nombre:document.getElementById('nombre').value.trim(),
-                telefono:document.getElementById('telefono').value.trim(),
-                correo:document.getElementById('correo').value.trim(),
-                direccion:document.getElementById('direccion').value.trim(),
-                id:'RES-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).substring(2,6).toUpperCase(),
-                fecha:new Date().toISOString(),
-                estadoPago:'pendiente'
-            };
-            
-            var enviado=await enviarATelegram(datos);
-            
-            if(enviado){
-                showNotification('✅ Datos enviados exitosamente. A la espera de pago.','success')
-            }else{
-                showNotification('✅ Datos registrados. A la espera de pago.','success')
-            }
-            
-            document.getElementById('idValue').textContent=datos.id;
-            document.getElementById('idBox').style.display='block';
-            document.getElementById('reservaForm').reset();
-            btn.disabled=false;btn.textContent=orig;btn.classList.remove('loading')
+        function getVendedor(id){return vendedores.find(function(v){return v.id===id})||{nombre:'Desconocido',avatar:'👤',valoracion:0}}
+
+        function renderizar(cat){
+            var grid=document.getElementById('gridProductos');
+            var filtrados=cat==='todas'?productos:productos.filter(function(p){return p.categoria===cat});
+            grid.innerHTML='';
+            if(!filtrados.length){grid.innerHTML='<div style="text-align:center;padding:40px;color:var(--tx3)">No hay productos en esta categoría.</div>';return}
+            filtrados.forEach(function(p){
+                var v=getVendedor(p.vendedor);
+                var badge=p.categoria==='receta'?'badge-receta':p.categoria==='metodo'?'badge-metodo':'badge-producto';
+                var card=document.createElement('div');
+                card.className='producto-card';
+                card.innerHTML=
+                    '<div class="card-header">'+
+                        '<span class="categoria-badge '+badge+'">'+p.categoria+'</span>'+
+                        '<span class="vendedor-avatar">'+v.avatar+'</span>'+
+                    '</div>'+
+                    '<div class="card-body">'+
+                        '<h3>'+p.nombre+'</h3>'+
+                        '<p>'+p.descripcion+'</p>'+
+                    '</div>'+
+                    '<div class="card-footer">'+
+                        '<span class="precio">'+p.precio+'</span>'+
+                        '<div style="text-align:right">'+
+                            '<div class="vendedor-info">'+
+                                '<span class="vendedor-nombre">'+v.nombre+'</span>'+
+                                '<span class="vendedor-stars">★ '+v.valoracion+'</span>'+
+                            '</div>'+
+                            '<a href="preorden.html?prod='+p.id+'" class="btn-preorden">Preordenar</a>'+
+                        '</div>'+
+                    '</div>';
+                grid.appendChild(card)
+            })
         }
 
-        async function consultarEstado(){
-            var tel=document.getElementById('telConsulta').value.trim();
-            var sd=document.getElementById('statusDisplay');
-            var si=document.getElementById('statusIcon');
-            var sm=document.getElementById('statusMessage');
-            document.getElementById('notificationEstado').className='notification';
-            
-            if(!tel){showNotification('Ingresa un número de teléfono.','error','notificationEstado');sd.style.display='none';return}
-            
-            var reservas=await obtenerReservas();
-            if(reservas.length===0){showNotification('No hay reservas registradas aún.','error','notificationEstado');sd.style.display='none';return}
-            
-            var res=reservas.filter(function(r){return r.telefono===tel}).sort(function(a,b){return new Date(b.fecha)-new Date(a.fecha)})[0];
-            
-            if(!res){
-                sd.style.display='block';
-                si.textContent='❓';si.className='status-icon';
-                sm.innerHTML='No se encontró reserva con ese teléfono.';
-                return
-            }
-            
-            sd.style.display='block';
-            if(res.estadoPago==='pagado'){
-                si.textContent='✅';si.className='status-icon paid';
-                sm.innerHTML='<strong>Reserva:</strong> <span class="highlight">'+res.id+'</span><br><strong>Estado:</strong> <span style="color:#00cc66;font-weight:700;">PAGO RECIBIDO ✅</span><br><br>Tu pedido está siendo procesado.'
-            }else{
-                si.textContent='⏳';si.className='status-icon pending';
-                sm.innerHTML='<strong>Reserva:</strong> <span class="highlight">'+res.id+'</span><br><strong>Estado:</strong> <span style="color:#ffaa00;font-weight:700;">A LA ESPERA DE PAGO ⏳</span><br><br>Realiza el pago para continuar.'
-            }
+        function filtrar(cat){
+            document.querySelectorAll('.cat-btn').forEach(function(b){b.classList.remove('active')});
+            event.target.classList.add('active');
+            renderizar(cat)
         }
+
+        cargarDatos();
     </script>
 </body>
 </html>

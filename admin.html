@@ -3,126 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fiftyshop - Admin</title>
+    <title>Fiftyshop - Panel Admin</title>
     <style>
         :root{--bg:#0a0a0a;--bg2:#1a1a1a;--bg3:#1e1e1e;--red:#8b0000;--red2:#b30000;--red3:#e60000;--tx:#e0e0e0;--tx2:#b0b0b0;--tx3:#808080;--bd:#2a0000;--inp:#111;--inpb:#3a0000;--ok:#0c6;--warn:#fa0;--err:#e60000}
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);background-image:radial-gradient(ellipse at center,rgba(139,0,0,0.08) 0%,transparent 70%);color:var(--tx);min-height:100vh;padding:20px}
         .container{max-width:1400px;margin:0 auto}
         .header{text-align:center;margin-bottom:30px;padding:20px;border-bottom:2px solid var(--bd)}
-        .header h1{font-size:2.5em;font-weight:900;letter-spacing:4px;background:linear-gradient(180deg,#ff1a1a 0%,#b30000 30%,#660000 60%,#330000 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 25px rgba(179,0,0,0.7));font-family:'Georgia',serif;margin-bottom:10px}
-        .header p{color:var(--tx3);letter-spacing:2px}
-        .config-panel{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:20px;display:flex;gap:15px;align-items:flex-end;flex-wrap:wrap}
-        .config-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:200px}
-        .config-group label{font-size:.75em;color:var(--tx2);text-transform:uppercase;letter-spacing:1px}
-        .config-group input,.config-group textarea{padding:10px 14px;background:var(--inp);border:1.5px solid var(--inpb);border-radius:8px;color:var(--tx);font-size:.9em;outline:none;font-family:monospace}
-        .config-group textarea{resize:vertical;min-height:60px}
-        .config-group input:focus,.config-group textarea:focus{border-color:var(--red);box-shadow:0 0 10px rgba(139,0,0,0.3)}
-        .btn{padding:10px 20px;border:none;border-radius:8px;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .3s;font-size:.85em;white-space:nowrap}
-        .btn-primary{background:var(--red);color:#fff}.btn-primary:hover{background:var(--red3)}
-        .btn-success{background:var(--ok);color:#000}.btn-success:hover{background:#00e673}
-        .btn-warning{background:var(--warn);color:#000}.btn-warning:hover{background:#fb3}
-        .btn-danger{background:var(--err);color:#fff}.btn-danger:hover{background:#f33}
-        .btn-sm{padding:6px 12px;font-size:.75em}
-        .btn-add{background:var(--ok);color:#000;font-size:1em;padding:12px 24px}
-        .btn-add:hover{background:#00e673;transform:scale(1.05)}
-        .add-section{background:var(--bg3);border:1px solid var(--ok);border-radius:12px;padding:20px;margin-bottom:20px}
-        .add-section h3{color:var(--ok);margin-bottom:15px;letter-spacing:2px;text-transform:uppercase}
-        .stats{display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap}
-        .stat-card{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:15px 20px;flex:1;min-width:150px;text-align:center}
-        .stat-card .number{font-size:2em;font-weight:900;color:var(--red3)}
-        .stat-card .label{font-size:.75em;color:var(--tx3);text-transform:uppercase;letter-spacing:1px}
-        .table-container{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;overflow:hidden;overflow-x:auto}
-        .table-header{padding:15px 20px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-        .table-header h2{font-size:1.1em;letter-spacing:2px}
-        .search-input{padding:8px 14px;background:var(--inp);border:1.5px solid var(--inpb);border-radius:6px;color:var(--tx);font-size:.85em;outline:none;min-width:200px}
-        .search-input:focus{border-color:var(--red)}
-        table{width:100%;border-collapse:collapse;font-size:.8em}
-        th{background:rgba(139,0,0,0.2);padding:12px 10px;text-align:left;font-weight:700;color:var(--red3);letter-spacing:1px;text-transform:uppercase;font-size:.75em;white-space:nowrap}
-        td{padding:10px;border-top:1px solid rgba(42,0,0,0.5);vertical-align:middle}
-        tr:hover td{background:rgba(139,0,0,0.05)}
-        .badge{display:inline-block;padding:4px 10px;border-radius:20px;font-weight:700;font-size:.75em;letter-spacing:1px;text-transform:uppercase}
+        .header h1{font-size:2.5em;font-weight:900;letter-spacing:4px;background:linear-gradient(180deg,#ff1a1a,#b30000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Georgia',serif;margin-bottom:10px}
+        .tabs{display:flex;gap:5px;margin-bottom:20px;flex-wrap:wrap}
+        .tab-btn{padding:10px 20px;background:var(--bg2);border:1px solid var(--bd);color:var(--tx2);cursor:pointer;border-radius:8px 8px 0 0;font-weight:600;letter-spacing:1px;text-transform:uppercase;font-size:.8em}
+        .tab-btn.active{background:var(--red);color:#fff;border-color:var(--red)}
+        .tab-content{display:none}
+        .tab-content.active{display:block}
+        .card{background:var(--bg3);border:1px solid var(--bd);border-radius:0 12px 12px 12px;padding:20px;margin-bottom:20px}
+        .config-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:15px}
+        .config-row label{font-size:.75em;color:var(--tx2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
+        .config-row input,.config-row textarea,.config-row select{padding:10px;background:var(--inp);border:1px solid var(--inpb);border-radius:6px;color:var(--tx);font-size:.85em;min-width:200px;outline:none}
+        .config-row textarea{resize:vertical;min-height:50px;width:100%}
+        .btn{padding:8px 16px;border:none;border-radius:6px;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;font-size:.8em}
+        .btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red3)}
+        .btn-green{background:var(--ok);color:#000}.btn-green:hover{background:#00e673}
+        .btn-yellow{background:var(--warn);color:#000}
+        .btn-del{background:var(--err);color:#fff}
+        .btn-sm{padding:4px 8px;font-size:.7em}
+        table{width:100%;border-collapse:collapse;font-size:.8em;margin-top:15px}
+        th{background:rgba(139,0,0,0.2);padding:10px 8px;text-align:left;font-weight:700;color:var(--red3);font-size:.75em;text-transform:uppercase;white-space:nowrap}
+        td{padding:8px;border-top:1px solid rgba(42,0,0,0.5)}
+        .badge{display:inline-block;padding:3px 8px;border-radius:12px;font-size:.7em;font-weight:700;text-transform:uppercase}
         .badge-pendiente{background:rgba(255,170,0,0.2);color:#fa0}
         .badge-pagado{background:rgba(0,204,102,0.2);color:#0c6}
-        .badge-cancelado{background:rgba(230,0,0,0.2);color:#e60000}
-        .actions{display:flex;gap:5px;flex-wrap:wrap}
-        .editable{cursor:pointer;padding:2px 4px;border-radius:3px;transition:background .2s}
-        .editable:hover{background:rgba(139,0,0,0.2)}
-        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:1000;justify-content:center;align-items:center}
-        .modal-overlay.active{display:flex}
-        .modal{background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:30px;max-width:500px;width:90%}
-        .modal h3{color:var(--red3);margin-bottom:15px;letter-spacing:2px}
-        .modal p{color:var(--tx2);margin-bottom:20px}
-        .modal-actions{display:flex;gap:10px;justify-content:flex-end}
-        .notification{position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;font-weight:600;z-index:2000;animation:slideIn .3s;display:none}
+        .notification{position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:10px;font-weight:600;z-index:2000;display:none}
         .notification.show{display:block}
         .notification.success{background:rgba(0,204,102,0.9);color:#000}
         .notification.error{background:rgba(230,0,0,0.9);color:#fff}
-        .notification.info{background:rgba(255,170,0,0.9);color:#000}
-        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-        @media(max-width:768px){.config-panel{flex-direction:column}.config-group{min-width:100%}th,td{font-size:.7em;padding:6px 4px}}
+        @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+        @media(max-width:768px){table{font-size:.65em}th,td{padding:4px}}
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>FIFTYS HOP</h1>
-            <p>PANEL DE ADMINISTRACIÓN</p>
+        <div class="header"><h1>FIFTYS HOP</h1><p style="color:var(--tx3)">PANEL DE ADMINISTRACIÓN</p></div>
+
+        <div class="config-row">
+            <div><label>Token GitHub</label><input type="password" id="githubToken" placeholder="ghp_..." style="width:250px"></div>
+            <div><label>Repo</label><input type="text" id="repoName" value="lemoxx2droid/fiftyshop" style="width:200px"></div>
+            <button class="btn btn-red" onclick="conectar()">🔗 Conectar</button>
         </div>
 
-        <div class="add-section">
-            <h3>➕ Agregar Reserva desde JSON</h3>
-            <p style="color:var(--tx3);margin-bottom:10px;font-size:.8em">Copia el JSON que llega a Telegram y pégalo aquí. Luego haz clic en "Agregar".</p>
-            <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
-                <div class="config-group" style="flex:2">
-                    <label>JSON de la reserva</label>
-                    <textarea id="jsonInput" placeholder='Pega aquí el JSON... Ej: {"nombre":"Juan","telefono":"123",...}' rows="3"></textarea>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('reservas')">📋 Reservas</button>
+            <button class="tab-btn" onclick="switchTab('productos')">📦 Productos</button>
+            <button class="tab-btn" onclick="switchTab('vendedores')">👤 Vendedores</button>
+            <button class="tab-btn" onclick="switchTab('reportes')">⚠️ Reportes</button>
+        </div>
+
+        <!-- TAB RESERVAS -->
+        <div class="tab-content active" id="tab-reservas">
+            <div class="card">
+                <h3 style="color:var(--red3);margin-bottom:10px">Agregar Reserva desde JSON</h3>
+                <div class="config-row">
+                    <textarea id="jsonReserva" placeholder='Pega el JSON de Telegram aquí...' style="flex:1;min-height:50px"></textarea>
+                    <button class="btn btn-green" onclick="agregarReserva()">➕ Agregar</button>
                 </div>
-                <button class="btn btn-add" onclick="agregarDesdeJSON()">➕ Agregar</button>
+                <button class="btn btn-red" onclick="cargarReservas()" style="margin-top:10px">🔄 Refrescar</button>
+                <table><thead><tr><th>ID</th><th>Fecha</th><th>Producto</th><th>Nombre</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReservas"></tbody></table>
             </div>
         </div>
 
-        <div class="config-panel">
-            <div class="config-group">
-                <label>Token de GitHub (no se guarda)</label>
-                <input type="password" id="githubToken" placeholder="Pega tu token aquí...">
-            </div>
-            <div class="config-group">
-                <label>Repositorio</label>
-                <input type="text" id="repoName" value="lemoxx2droid/fiftyshop">
-            </div>
-            <button class="btn btn-primary" onclick="conectar()">🔗 Conectar</button>
-            <button class="btn btn-success" onclick="cargar()">🔄 Refrescar</button>
-        </div>
-
-        <div class="stats" id="statsPanel" style="display:none">
-            <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">Total</div></div>
-            <div class="stat-card"><div class="number" id="statPendientes" style="color:#fa0">0</div><div class="label">Pendientes</div></div>
-            <div class="stat-card"><div class="number" id="statPagados" style="color:#0c6">0</div><div class="label">Pagados</div></div>
-            <div class="stat-card"><div class="number" id="statHoy">0</div><div class="label">Hoy</div></div>
-        </div>
-
-        <div class="table-container" id="tableContainer" style="display:none">
-            <div class="table-header">
-                <h2>📋 Reservas</h2>
-                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar..." oninput="filtrar()">
-            </div>
-            <div style="overflow-x:auto">
-                <table>
-                    <thead><tr><th>ID</th><th>Fecha</th><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Dirección</th><th>Estado</th><th>Acciones</th></tr></thead>
-                    <tbody id="tbodyReservas"></tbody>
-                </table>
+        <!-- TAB PRODUCTOS -->
+        <div class="tab-content" id="tab-productos">
+            <div class="card">
+                <h3 style="color:var(--red3);margin-bottom:10px">Agregar Producto</h3>
+                <div class="config-row">
+                    <input type="text" id="prodNombre" placeholder="Nombre del producto">
+                    <select id="prodCategoria"><option value="receta">Receta</option><option value="metodo">Método</option><option value="producto">Producto</option></select>
+                    <input type="text" id="prodPrecio" placeholder="Precio (ej: 25€)">
+                    <select id="prodVendedor"></select>
+                </div>
+                <div class="config-row"><textarea id="prodDescripcion" placeholder="Descripción del producto..." style="width:100%"></textarea></div>
+                <button class="btn btn-green" onclick="agregarProducto()">➕ Agregar Producto</button>
+                <button class="btn btn-red" onclick="cargarProductos()" style="margin-left:10px">🔄 Refrescar</button>
+                <table style="margin-top:15px"><thead><tr><th>ID</th><th>Nombre</th><th>Cat</th><th>Precio</th><th>Vendedor</th><th>Activo</th><th>Acciones</th></tr></thead><tbody id="tbodyProductos"></tbody></table>
             </div>
         </div>
-    </div>
 
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal">
-            <h3>⚠️ Confirmar Eliminación</h3>
-            <p>¿Eliminar <strong id="deleteReservaId"></strong>?</p>
-            <div class="modal-actions">
-                <button class="btn btn-warning" onclick="cerrarModal()">Cancelar</button>
-                <button class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+        <!-- TAB VENDEDORES -->
+        <div class="tab-content" id="tab-vendedores">
+            <div class="card">
+                <h3 style="color:var(--red3);margin-bottom:10px">Agregar Vendedor</h3>
+                <div class="config-row">
+                    <input type="text" id="venNombre" placeholder="Nombre">
+                    <input type="text" id="venAvatar" placeholder="Emoji (🧪)">
+                    <input type="text" id="venValoracion" placeholder="Valoración (4.8)">
+                </div>
+                <div class="config-row"><textarea id="venDescripcion" placeholder="Descripción..." style="width:100%"></textarea></div>
+                <button class="btn btn-green" onclick="agregarVendedor()">➕ Agregar Vendedor</button>
+                <button class="btn btn-red" onclick="cargarVendedores()" style="margin-left:10px">🔄 Refrescar</button>
+                <table style="margin-top:15px"><thead><tr><th>ID</th><th>Avatar</th><th>Nombre</th><th>Val.</th><th>Acciones</th></tr></thead><tbody id="tbodyVendedores"></tbody></table>
+            </div>
+        </div>
+
+        <!-- TAB REPORTES -->
+        <div class="tab-content" id="tab-reportes">
+            <div class="card">
+                <h3 style="color:var(--warn);margin-bottom:10px">Agregar Reporte desde JSON</h3>
+                <div class="config-row">
+                    <textarea id="jsonReporte" placeholder='Pega el JSON del reporte aquí...' style="flex:1;min-height:50px"></textarea>
+                    <button class="btn btn-yellow" onclick="agregarReporte()">➕ Agregar</button>
+                </div>
+                <button class="btn btn-red" onclick="cargarReportes()" style="margin-top:10px">🔄 Refrescar</button>
+                <table><thead><tr><th>ID</th><th>Fecha</th><th>Reserva</th><th>Nombre</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbodyReportes"></tbody></table>
             </div>
         </div>
     </div>
@@ -130,83 +121,143 @@
     <div class="notification" id="notification"></div>
 
     <script>
-        var T='',A='',D=[],S=null,X=null;
+        var T='',API='',R=[],P=[],V=[],RP=[];
 
         function N(m,t){var n=document.getElementById('notification');n.textContent=m;n.className='notification show '+t;setTimeout(function(){n.className='notification'},4000)}
 
-        function conectar(){T=document.getElementById('githubToken').value.trim();A='https://api.github.com/repos/'+document.getElementById('repoName').value.trim()+'/contents/reservas.json';if(!T||!A)return N('Llena todos los campos','error');N('✅ Conectado','success');cargar()}
+        function conectar(){
+            T=document.getElementById('githubToken').value.trim();
+            var repo=document.getElementById('repoName').value.trim();
+            if(!T||!repo)return N('Llena los campos','error');
+            cargarTodo()
+        }
 
-        async function cargar(){
-            if(!T||!A)return N('Conecta primero','error');
+        async function ghRead(file){
+            var url='https://api.github.com/repos/'+document.getElementById('repoName').value.trim()+'/contents/'+file;
+            var r=await fetch(url,{headers:{'Authorization':'token '+T,'Accept':'application/vnd.github.v3+json'}});
+            if(!r.ok){if(r.status===404)return{data:[],sha:null};throw new Error('Error '+r.status)}
+            var d=await r.json();return{data:JSON.parse(atob(d.content)),sha:d.sha}
+        }
+
+        async function ghWrite(file,data,sha,msg){
+            var url='https://api.github.com/repos/'+document.getElementById('repoName').value.trim()+'/contents/'+file;
+            var c=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+            var b={message:msg,content:c};if(sha)b.sha=sha;
+            var r=await fetch(url,{method:'PUT',headers:{'Authorization':'token '+T,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(b)});
+            if(!r.ok)throw new Error('Error al guardar');
+            var d=await r.json();return d.content.sha
+        }
+
+        async function cargarTodo(){
             try{
-                var r=await fetch(A,{headers:{'Authorization':'token '+T,'Accept':'application/vnd.github.v3+json'}});
-                if(!r.ok){if(r.status===404){D=[];S=null}else{var e=await r.json();throw new Error(e.message)}}
-                else{var d=await r.json();S=d.sha;D=JSON.parse(atob(d.content))}
-                R();ST();
-                document.getElementById('statsPanel').style.display='flex';
-                document.getElementById('tableContainer').style.display='block';
-                N('✅ '+D.length+' reservas','success')
+                var r1=await ghRead('reservas.json');R=r1.data;window._shaR=r1.sha;
+                var r2=await ghRead('productos.json');P=r2.data;window._shaP=r2.sha;
+                var r3=await ghRead('vendedores.json');V=r3.data;window._shaV=r3.sha;
+                var r4=await ghRead('reportes.json');RP=r4.data;window._shaRP=r4.sha;
+                renderReservas();renderProductos();renderVendedores();renderReportes();
+                llenarSelectVendedores();N('✅ Todo cargado','success')
             }catch(e){N('Error: '+e.message,'error')}
         }
 
-        async function G(msg){
-            if(!T||!A)return false;
-            try{
-                var c=btoa(unescape(encodeURIComponent(JSON.stringify(D,null,2))));
-                var b={message:msg,content:c};if(S)b.sha=S;
-                var r=await fetch(A,{method:'PUT',headers:{'Authorization':'token '+T,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(b)});
-                if(!r.ok){var e=await r.json();throw new Error(e.message)}
-                var d=await r.json();S=d.content.sha;return true
-            }catch(e){N('Error: '+e.message,'error');return false}
+        function switchTab(t){
+            document.querySelectorAll('.tab-content').forEach(function(tc){tc.classList.remove('active')});
+            document.querySelectorAll('.tab-btn').forEach(function(tb){tb.classList.remove('active')});
+            document.getElementById('tab-'+t).classList.add('active');
+            event.target.classList.add('active')
         }
 
-        function agregarDesdeJSON(){
-            var txt=document.getElementById('jsonInput').value.trim();
-            if(!txt)return N('Pega el JSON primero','error');
-            try{
-                var obj=JSON.parse(txt);
-                if(!obj.nombre||!obj.telefono||!obj.correo||!obj.direccion)return N('JSON incompleto. Faltan campos.','error');
-                if(!obj.id)obj.id='RES-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).substring(2,6).toUpperCase();
-                if(!obj.fecha)obj.fecha=new Date().toISOString();
-                if(!obj.estadoPago)obj.estadoPago='pendiente';
-                D.push(obj);
-                if(T&&A){G('Agregar: '+obj.id).then(function(o){if(o){R();ST();N('✅ Agregada: '+obj.id,'success');document.getElementById('jsonInput').value=''}else{D.pop();R()}})}
-                else{R();ST();N('✅ Agregada localmente. Conecta GitHub para guardar.','success');document.getElementById('jsonInput').value=''}
-            }catch(e){N('JSON inválido: '+e.message,'error')}
-        }
-
-        async function CS(i,st){var p=D[i].estadoPago;D[i].estadoPago=st;if(await G('Estado: '+D[i].id)){R();ST();N('✅ '+st.toUpperCase(),'success')}else{D[i].estadoPago=p;R()}}
-        function EF(i,c,a){var v=prompt('Editar '+c+':',a);if(!v||v===a)return;var p=D[i][c];D[i][c]=v;G('Editar '+c).then(function(o){if(o){R();N('✅ Actualizado','success')}else{D[i][c]=p;R()}})}
-        function CE(i){X=i;document.getElementById('deleteReservaId').textContent=D[i].id;document.getElementById('deleteModal').classList.add('active')}
-        function CM(){document.getElementById('deleteModal').classList.remove('active');X=null}
-        async function EL(){if(X===null)return;var r=D[X];D.splice(X,1);if(await G('Eliminar: '+r.id)){R();ST();N('🗑️ Eliminada','success')}else{D.splice(X,0,r);R()}CM()}
-        function filtrar(){var f=document.getElementById('searchInput').value.toLowerCase();document.querySelectorAll('#tbodyReservas tr').forEach(function(r){r.style.display=r.textContent.toLowerCase().includes(f)?'':'none'})}
-        function ST(){var h=new Date().toISOString().split('T')[0];document.getElementById('statTotal').textContent=D.length;document.getElementById('statPendientes').textContent=D.filter(function(r){return r.estadoPago==='pendiente'}).length;document.getElementById('statPagados').textContent=D.filter(function(r){return r.estadoPago==='pagado'}).length;document.getElementById('statHoy').textContent=D.filter(function(r){return r.fecha&&r.fecha.startsWith(h)}).length}
-        function R(){
+        // RESERVAS
+        function renderReservas(){
             var tb=document.getElementById('tbodyReservas');tb.innerHTML='';
-            if(!D.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px">Vacío</td></tr>';return}
-            [].concat(D).sort(function(a,b){return new Date(b.fecha)-new Date(a.fecha)}).forEach(function(r){
-                var i=D.indexOf(r),ba=r.estadoPago==='pagado'?'badge-pagado':r.estadoPago==='cancelado'?'badge-cancelado':'badge-pendiente';
-                var f=r.fecha?new Date(r.fecha).toLocaleString('es-MX',{dateStyle:'short',timeStyle:'short'}):'N/A';
-                var tr=document.createElement('tr');
-                tr.innerHTML='<td><code style="color:#e60000;font-size:.8em">'+(r.id||'')+'</code></td><td>'+f+'</td>'+
-                    '<td><span class="editable" ondblclick="EF('+i+',\'nombre\',\''+(r.nombre||'').replace(/'/g,"\\'")+'\')">'+(r.nombre||'')+'</span></td>'+
-                    '<td><span class="editable" ondblclick="EF('+i+',\'telefono\',\''+(r.telefono||'').replace(/'/g,"\\'")+'\')">'+(r.telefono||'')+'</span></td>'+
-                    '<td><span class="editable" ondblclick="EF('+i+',\'correo\',\''+(r.correo||'').replace(/'/g,"\\'")+'\')">'+(r.correo||'')+'</span></td>'+
-                    '<td><span class="editable" style="max-width:150px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" ondblclick="EF('+i+',\'direccion\',\''+(r.direccion||'').replace(/'/g,"\\'").replace(/\n/g,' ')+'\')" title="'+(r.direccion||'').replace(/"/g,'&quot;')+'">'+(r.direccion||'')+'</span></td>'+
-                    '<td><span class="badge '+ba+'">'+(r.estadoPago||'pendiente').toUpperCase()+'</span></td>'+
-                    '<td><div class="actions">'+
-                    (r.estadoPago==='pendiente'?'<button class="btn btn-success btn-sm" onclick="CS('+i+',\'pagado\')">✅</button>':'')+
-                    (r.estadoPago==='pagado'?'<button class="btn btn-warning btn-sm" onclick="CS('+i+',\'pendiente\')">⏳</button>':'')+
-                    (r.estadoPago!=='cancelado'?'<button class="btn btn-warning btn-sm" onclick="CS('+i+',\'cancelado\')">❌</button>':'')+
-                    (r.estadoPago==='cancelado'?'<button class="btn btn-primary btn-sm" onclick="CS('+i+',\'pendiente\')">🔄</button>':'')+
-                    '<button class="btn btn-danger btn-sm" onclick="CE('+i+')">🗑️</button></div></td>';
-                tb.appendChild(tr)
+            if(!R.length){tb.innerHTML='<tr><td colspan="7">Vacío</td></tr>';return}
+            [].concat(R).reverse().forEach(function(r,i){
+                var ri=R.indexOf(r);
+                tb.innerHTML+='<tr><td><code>'+r.id+'</code></td><td>'+new Date(r.fecha).toLocaleDateString()+'</td><td>'+(r.producto||'-')+'</td><td>'+r.nombre+'</td><td>'+r.telefono+'</td><td><span class="badge '+(r.estadoPago==='pagado'?'badge-pagado':'badge-pendiente')+'">'+r.estadoPago+'</span></td><td>'+
+                    (r.estadoPago==='pendiente'?'<button class="btn btn-green btn-sm" onclick="cambiarEstadoR('+ri+')">✅</button> ':'')+
+                    '<button class="btn btn-del btn-sm" onclick="eliminarR('+ri+')">🗑️</button></td></tr>'
             })
         }
-        document.getElementById('confirmDeleteBtn').addEventListener('click',EL);
-        document.getElementById('deleteModal').addEventListener('click',function(e){if(e.target===this)CM()});
-        document.addEventListener('keydown',function(e){if(e.key==='Escape')CM()});
+
+        async function agregarReserva(){
+            try{var j=JSON.parse(document.getElementById('jsonReserva').value);R.push(j);window._shaR=await ghWrite('reservas.json',R,window._shaR,'Agregar: '+j.id);renderReservas();document.getElementById('jsonReserva').value='';N('✅ Agregada','success')}catch(e){N('Error: '+e.message,'error')}
+        }
+
+        async function cambiarEstadoR(i){R[i].estadoPago=R[i].estadoPago==='pagado'?'pendiente':'pagado';window._shaR=await ghWrite('reservas.json',R,window._shaR,'Estado');renderReservas()}
+        async function eliminarR(i){R.splice(i,1);window._shaR=await ghWrite('reservas.json',R,window._shaR,'Eliminar');renderReservas();N('🗑️ Eliminada','success')}
+        async function cargarReservas(){var r=await ghRead('reservas.json');R=r.data;window._shaR=r.sha;renderReservas()}
+
+        // PRODUCTOS
+        function llenarSelectVendedores(){
+            var sel=document.getElementById('prodVendedor');sel.innerHTML='';
+            V.forEach(function(v){sel.innerHTML+='<option value="'+v.id+'">'+v.nombre+'</option>'})
+        }
+
+        function renderProductos(){
+            var tb=document.getElementById('tbodyProductos');tb.innerHTML='';
+            P.forEach(function(p,i){
+                tb.innerHTML+='<tr><td><code>'+p.id+'</code></td><td>'+p.nombre+'</td><td>'+p.categoria+'</td><td>'+p.precio+'</td><td>'+p.vendedor+'</td><td>'+(p.activo?'✅':'❌')+'</td><td>'+
+                    '<button class="btn btn-yellow btn-sm" onclick="toggleP('+i+')">'+(p.activo?'Desactivar':'Activar')+'</button> '+
+                    '<button class="btn btn-del btn-sm" onclick="eliminarP('+i+')">🗑️</button></td></tr>'
+            })
+        }
+
+        async function agregarProducto(){
+            var p={
+                id:'PROD-'+Date.now().toString(36).toUpperCase(),
+                nombre:document.getElementById('prodNombre').value,
+                categoria:document.getElementById('prodCategoria').value,
+                descripcion:document.getElementById('prodDescripcion').value,
+                precio:document.getElementById('prodPrecio').value,
+                vendedor:document.getElementById('prodVendedor').value,
+                fecha:new Date().toISOString(),
+                activo:true
+            };
+            P.push(p);window._shaP=await ghWrite('productos.json',P,window._shaP,'Agregar: '+p.id);renderProductos();N('✅ Agregado','success')
+        }
+
+        async function toggleP(i){P[i].activo=!P[i].activo;window._shaP=await ghWrite('productos.json',P,window._shaP,'Toggle');renderProductos()}
+        async function eliminarP(i){P.splice(i,1);window._shaP=await ghWrite('productos.json',P,window._shaP,'Eliminar');renderProductos();N('🗑️ Eliminado','success')}
+        async function cargarProductos(){var r=await ghRead('productos.json');P=r.data;window._shaP=r.sha;renderProductos()}
+
+        // VENDEDORES
+        function renderVendedores(){
+            var tb=document.getElementById('tbodyVendedores');tb.innerHTML='';
+            V.forEach(function(v,i){
+                tb.innerHTML+='<tr><td><code>'+v.id+'</code></td><td>'+v.avatar+'</td><td>'+v.nombre+'</td><td>★ '+v.valoracion+'</td><td><button class="btn btn-del btn-sm" onclick="eliminarV('+i+')">🗑️</button></td></tr>'
+            })
+        }
+
+        async function agregarVendedor(){
+            var v={
+                id:'USR-'+Date.now().toString(36).toUpperCase(),
+                nombre:document.getElementById('venNombre').value,
+                avatar:document.getElementById('venAvatar').value,
+                valoracion:parseFloat(document.getElementById('venValoracion').value)||4.5,
+                ventas:Math.floor(Math.random()*200)+50,
+                descripcion:document.getElementById('venDescripcion').value
+            };
+            V.push(v);window._shaV=await ghWrite('vendedores.json',V,window._shaV,'Agregar: '+v.id);renderVendedores();llenarSelectVendedores();N('✅ Agregado','success')
+        }
+
+        async function eliminarV(i){V.splice(i,1);window._shaV=await ghWrite('vendedores.json',V,window._shaV,'Eliminar');renderVendedores();llenarSelectVendedores();N('🗑️ Eliminado','success')}
+        async function cargarVendedores(){var r=await ghRead('vendedores.json');V=r.data;window._shaV=r.sha;renderVendedores();llenarSelectVendedores()}
+
+        // REPORTES
+        function renderReportes(){
+            var tb=document.getElementById('tbodyReportes');tb.innerHTML='';
+            if(!RP.length){tb.innerHTML='<tr><td colspan="7">Vacío</td></tr>';return}
+            [].concat(RP).reverse().forEach(function(r,i){
+                var ri=RP.indexOf(r);
+                tb.innerHTML+='<tr><td><code>'+r.id+'</code></td><td>'+new Date(r.fecha).toLocaleDateString()+'</td><td>'+(r.idReserva||'-')+'</td><td>'+r.nombre+'</td><td>'+r.tipo+'</td><td><span class="badge badge-pendiente">'+r.estado+'</span></td><td><button class="btn btn-del btn-sm" onclick="eliminarRP('+ri+')">🗑️</button></td></tr>'
+            })
+        }
+
+        async function agregarReporte(){
+            try{var j=JSON.parse(document.getElementById('jsonReporte').value);RP.push(j);window._shaRP=await ghWrite('reportes.json',RP,window._shaRP,'Agregar: '+j.id);renderReportes();document.getElementById('jsonReporte').value='';N('✅ Agregado','success')}catch(e){N('Error: '+e.message,'error')}
+        }
+
+        async function eliminarRP(i){RP.splice(i,1);window._shaRP=await ghWrite('reportes.json',RP,window._shaRP,'Eliminar');renderReportes();N('🗑️ Eliminado','success')}
+        async function cargarReportes(){var r=await ghRead('reportes.json');RP=r.data;window._shaRP=r.sha;renderReportes()}
     </script>
 </body>
 </html>

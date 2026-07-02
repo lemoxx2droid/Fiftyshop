@@ -1,0 +1,26 @@
+[
+  {
+    "id": "USR-001",
+    "nombre": "Marco Químico",
+    "avatar": "🧪",
+    "valoracion": 4.8,
+    "ventas": 156,
+    "descripcion": "Químico profesional con 10 años de experiencia en síntesis orgánica."
+  },
+  {
+    "id": "USR-002",
+    "nombre": "GreenMaster",
+    "avatar": "🌿",
+    "valoracion": 4.6,
+    "ventas": 89,
+    "descripcion": "Experto en cultivos indoor y métodos de extracción natural."
+  },
+  {
+    "id": "USR-003",
+    "nombre": "LabPro Supplies",
+    "avatar": "⚗️",
+    "valoracion": 4.9,
+    "ventas": 234,
+    "descripcion": "Proveedor de material de laboratorio y kits profesionales."
+  }
+]

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiftyshop - Reportar Problema</title>
+    <style>
+        :root{--bg:#0a0a0a;--bg2:#1a1a1a;--bg3:#1e1e1e;--red:#8b0000;--red2:#b30000;--red3:#e60000;--tx:#e0e0e0;--tx2:#b0b0b0;--tx3:#808080;--bd:#2a0000;--inp:#111;--inpb:#3a0000;--ok:#0c6;--warn:#fa0}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);background-image:radial-gradient(ellipse at center,rgba(139,0,0,0.06) 0%,transparent 70%);color:var(--tx);min-height:100vh}
+        .nav-top{background:var(--bg2);border-bottom:1px solid var(--bd);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100}
+        .nav-top .logo-text{font-size:1.5em;font-weight:900;letter-spacing:3px;background:linear-gradient(180deg,#ff1a1a 0%,#b30000 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Georgia',serif}
+        .nav-links{display:flex;gap:12px;flex-wrap:wrap}
+        .nav-links a{color:var(--tx2);text-decoration:none;padding:8px 16px;border-radius:6px;font-size:.85em;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .3s;border:1px solid transparent}
+        .nav-links a:hover,.nav-links a.active{color:var(--red3);border-color:var(--red);background:rgba(139,0,0,0.1)}
+        .container{max-width:600px;margin:0 auto;padding:20px}
+        .card{background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:30px;box-shadow:0 0 20px rgba(139,0,0,0.3)}
+        .card::before{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent,var(--warn),var(--warn),transparent);margin-bottom:20px}
+        .section-title{font-size:1.3em;font-weight:700;margin-bottom:8px;text-align:center;letter-spacing:2px}
+        .section-title span{color:var(--warn)}
+        .form-group{margin-bottom:18px}
+        .form-group label{display:block;margin-bottom:6px;font-size:.8em;font-weight:600;color:var(--tx2);letter-spacing:1px;text-transform:uppercase}
+        .form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 16px;background:var(--inp);border:1.5px solid var(--inpb);border-radius:8px;color:var(--tx);font-size:.95em;outline:none;font-family:inherit}
+        .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--warn);box-shadow:0 0 15px rgba(255,170,0,0.3)}
+        .form-group textarea{resize:vertical;min-height:100px}
+        .btn-submit{width:100%;padding:14px;background:linear-gradient(180deg,#fa0,#c80);border:none;border-radius:10px;color:#000;font-size:1em;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s}
+        .btn-submit:hover{box-shadow:0 6px 30px rgba(255,170,0,0.4)}
+        .btn-submit:disabled{background:#333;color:#666;cursor:not-allowed}
+        .notification{display:none;padding:16px;border-radius:10px;margin-top:16px;text-align:center;font-weight:600}
+        .notification.success{display:block;background:rgba(0,204,102,0.15);border:1px solid rgba(0,204,102,0.4);color:#0c6}
+        .notification.error{display:block;background:rgba(230,0,0,0.15);border:1px solid rgba(230,0,0,0.4);color:#e60000}
+        @media(max-width:480px){.card{padding:20px 16px}}
+    </style>
+</head>
+<body>
+    <nav class="nav-top">
+        <div class="logo-text">FIFTYS HOP</div>
+        <div class="nav-links">
+            <a href="index.html">Catálogo</a>
+            <a href="preorden.html">Preordenar</a>
+            <a href="reporte.html" class="active">Reportar</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h3 class="section-title"><span>⚠️</span> Reportar un Problema <span>⚠️</span></h3>
+            <p style="text-align:center;color:var(--tx3);font-size:.85em;margin-bottom:20px">Si no has recibido tu producto o tienes algún problema, repórtalo aquí.</p>
+            
+            <form id="reporteForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label>ID de Reserva (si lo tienes)</label>
+                    <input type="text" id="idReserva" placeholder="ORD-XXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="nombre" placeholder="Tu nombre..." required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono de Contacto</label>
+                    <input type="tel" id="telefono" placeholder="+34 612 345 678" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Problema</label>
+                    <select id="tipo" required>
+                        <option value="">Selecciona...</option>
+                        <option value="no_entrega">No he recibido el producto</option>
+                        <option value="producto_incorrecto">Producto incorrecto</option>
+                        <option value="calidad">Problema de calidad</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción del Problema</label>
+                    <textarea id="descripcion" placeholder="Explica detalladamente tu problema..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn">Enviar Reporte</button>
+            </form>
+            <div id="notification" class="notification"></div>
+        </div>
+    </div>
+
+    <script>
+        var TK='8904805084:AAGUj2dSJfFVmCPExt4Tt-kFSSGUpLEPp6E';
+        var CID='7353460594';
+
+        function showNotification(m,ty){
+            var n=document.getElementById('notification');
+            n.textContent=m;n.className='notification '+ty;
+            setTimeout(function(){n.className='notification'},8000)
+        }
+
+        async function enviarATelegram(datos){
+            var msg='⚠️ *NUEVO REPORTE - FIFTYSHOP* ⚠️\n\n'+
+                '🆔 *ID Reporte:* `'+datos.id+'`\n'+
+                '📦 *ID Reserva:* '+(datos.idReserva||'No proporcionado')+'\n'+
+                '📅 *Fecha:* '+new Date(datos.fecha).toLocaleString('es-ES')+'\n\n'+
+                '👤 *Nombre:* '+datos.nombre+'\n'+
+                '📱 *Teléfono:* '+datos.telefono+'\n'+
+                '🏷️ *Tipo:* '+datos.tipo+'\n'+
+                '📝 *Descripción:* '+datos.descripcion+'\n\n'+
+                '📋 *JSON:*\n```json\n'+JSON.stringify(datos,null,2)+'\n```';
+            try{
+                var r=await fetch('https://api.telegram.org/bot'+TK+'/sendMessage',{
+                    method:'POST',headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({chat_id:CID,text:msg,parse_mode:'Markdown'})
+                });
+                var j=await r.json();return j.ok
+            }catch(e){return false}
+        }
+
+        async function handleSubmit(e){
+            e.preventDefault();
+            var btn=document.getElementById('submitBtn');
+            btn.disabled=true;btn.textContent='ENVIANDO...';
+            var datos={
+                id:'REP-'+Date.now().toString(36).toUpperCase(),
+                idReserva:document.getElementById('idReserva').value.trim(),
+                nombre:document.getElementById('nombre').value.trim(),
+                telefono:document.getElementById('telefono').value.trim(),
+                tipo:document.getElementById('tipo').value,
+                descripcion:document.getElementById('descripcion').value.trim(),
+                fecha:new Date().toISOString(),
+                estado:'pendiente'
+            };
+            await enviarATelegram(datos);
+            showNotification('✅ Reporte enviado. Te contactaremos pronto.','success');
+            document.getElementById('reporteForm').reset();
+            btn.disabled=false;btn.textContent='Enviar Reporte'
+        }
+    </script>
+</body>
+</html>
