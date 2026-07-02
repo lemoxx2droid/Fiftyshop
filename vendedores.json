@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "USR-MR3DPUAC",
+    "nombre": "Fiftyshop",
+    "avatar": "👩‍💼",
+    "valoracion": 5,
+    "ventas": 128,
+    "descripcion": "Productos vendidos por nuestra página oficial."
+  }
+]
