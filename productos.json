@@ -3,7 +3,7 @@
     "id": "PROD-MR3INXOE",
     "nombre": "Metodo desbloqueo IOS ",
     "categoria": "metodo",
-    "precio": "25€",
+    "precio": "25â¬",
     "vendedor": "USR-MR3DPUAC",
     "descripcion": "Metodo de desbloqueo de moviles Iphone A12+",
     "activo": true,
@@ -13,10 +13,20 @@
     "id": "PROD-MR3IQ004",
     "nombre": "Metodo ANTIBOTS Google ADS",
     "categoria": "metodo",
-    "precio": "10€",
+    "precio": "10â¬",
     "vendedor": "USR-MR3DPUAC",
     "descripcion": "Metodo de ofuscacion para evitar bloqueo Bots Google ADS en paginas web",
     "activo": true,
     "fecha": "2026-07-02T13:06:17.860Z"
+  },
+  {
+    "id": "PROD-MR528ZSI",
+    "nombre": "Receta de Hachis",
+    "categoria": "receta",
+    "precio": "10€",
+    "vendedor": "USR-MR3DPUAC",
+    "descripcion": "La receta para preparar hachis",
+    "activo": true,
+    "fecha": "2026-07-03T15:00:42.930Z"
   }
 ]
