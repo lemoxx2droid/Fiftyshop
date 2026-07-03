@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "producto": "Receta de Hachis",
+    "precio": "10€",
+    "productoId": "PROD-MR528ZSI",
+    "nombre": "Cristhel",
+    "telefono": "+12123456789",
+    "correo": "cristhel@gmail.con",
+    "direccion": "Cudvsusb sibsisvsjs idjsus",
+    "id": "ORD-MR529YPZ-QBZV",
+    "fecha": "2026-07-03T15:01:28.200Z",
+    "estadoPago": "pendiente"
+  }
+]
